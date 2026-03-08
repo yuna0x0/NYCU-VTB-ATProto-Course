@@ -35,10 +35,7 @@ colorSchema: dark
 
 <br>
 
-<div class="inline-flex items-center gap-3 border border-white/40 rounded-xl px-5 py-2">
-  <img src="https://yuna0x0.com/avatar.webp" class="w-8 h-8 rounded-full" />
-  <span><a href="https://yuna0x0.com" class="!border-none">悠奈喵 (yuna0x0)</a></span>
-</div>
+<NameCard />
 
 <!--<div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10"> <carbon:arrow-right />
 </div>-->
@@ -70,10 +67,7 @@ dragPos:
 <p class="text-white/60 !mb-0">交大 VTuber 社 - 114-2 社課</p>
 <h1 class="!mt-2 !mb-4">AT Protocol 從零開始喵</h1>
 
-<div class="inline-flex items-center gap-3 border border-white/40 rounded-xl px-4 py-1.5 mb-6 self-start text-sm">
-  <img src="https://yuna0x0.com/avatar.webp" class="w-6 h-6 rounded-full" />
-  <span><a href="https://yuna0x0.com" class="!border-none">悠奈喵 (yuna0x0)</a></span>
-</div>
+<NameCard size="sm" class="mb-6 self-start" />
 
 <div class="flex flex-col text-lg">
   <div class="flex gap-6 py-3 border-b border-white/20">
@@ -123,17 +117,6 @@ dragPos:
 
 <img v-drag="'sherry'" src="./assets/sherry-1.webp">
 
-<style>
-.slidev-vclick-target {
-  transition: opacity 100ms ease;
-}
-
-.slidev-vclick-hidden {
-  opacity: 0.2 !important;
-  pointer-events: none;
-}
-</style>
-
 ---
 ---
 
@@ -173,17 +156,6 @@ dragPos:
 
 </div>
 
-<style>
-.slidev-vclick-target {
-    transition: opacity 0.5s ease;
-}
-
-.slidev-vclick-hidden {
-  opacity: 0.2 !important;
-  pointer-events: none;
-}
-</style>
-
 ---
 class: text-center
 ---
@@ -191,46 +163,119 @@ class: text-center
 # 第一堂課程規劃
 
 <div class="grid grid-cols-3 gap-6 mt-8">
-  <div v-click="[1, 6]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
+  <div v-click="[1, 9]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
     <lucide:at-sign class="text-5xl mb-4" />
     <p class="text-center text-lg font-bold !leading-[2]"><span class="color-orange">AT Protocol</span> 是什麼？</p>
   </div>
-  <div v-click="[6, 7]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
+  <div v-click="[9, 10]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
     <lucide:bot class="text-5xl mb-4" />
     <p class="text-center text-lg font-bold !leading-[2]">實作一個<span class="color-rose">機器人</span><br>在 Bluesky 上互動</p>
   </div>
-  <div v-click="[7, 8]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
+  <div v-click="[10, 11]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
     <lucide:newspaper class="text-5xl mb-4" />
-    <p class="text-center text-lg font-bold !leading-[2]">實作<span v-mark.underline.lime="[7, 8]" class="color-lime">自己的演算法</span><br>讓河道顯示想看的內容！</p>
+    <p class="text-center text-lg font-bold !leading-[2]">實作<span v-mark.underline.lime="[10, 11]" class="color-lime">自己的演算法</span><br>讓河道顯示想看的內容！</p>
   </div>
 </div>
 
-<div class="details-area relative mt-20 text-white/80 text-xl h-12">
-  <div v-click="[1, 6]" class="absolute inset-x-0 flex justify-center gap-3 flex-wrap">
-    <span v-mark.box.pink="[2, 3]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">設計理念</span>
-    <span v-mark.box.pink="[3, 4]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">身份系統 (DID)</span>
-    <span v-mark.box.pink="[4, 5]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">資料儲存（PDS)</span>
-    <span v-mark.box.pink="[5, 6]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">與&nbsp;<span class="color-blue">Bluesky</span>&nbsp;(App View) 的關係</span>
+<div class="details-area relative text-white/80 text-xl h-12">
+  <div v-click="[1, 9]" class="absolute inset-x-0 flex justify-center mt-14 gap-6 flex-wrap">
+    <span v-mark.box.pink="[2, 3]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">協定架構</span>
+    <span v-mark.box.pink="[3, 4]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">身份系統 (DID PLC)</span>
+    <span v-mark.box.pink="[4, 5]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">資料儲存 (PDS)</span>
+    <span v-mark.box.pink="[5, 6]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">資料結構 (Lexicon)</span>
+    <span v-mark.box.pink="[6, 7]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">中繼 (Firehose / Jetstream)</span>
+    <span v-mark.box.pink="[7, 8]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">App View</span>
+    <span v-mark.box.pink="[8, 9]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">與&nbsp;<span class="color-blue">Bluesky</span>&nbsp;的關係</span>
   </div>
-  <div v-click="[6, 7]" class="absolute inset-x-0 flex justify-center gap-3 flex-wrap">
+  <div v-click="[9, 10]" class="absolute inset-x-0 flex justify-center mt-20 gap-3 flex-wrap">
     <span class="inline-flex border border-white/40 rounded-xl px-5 py-2">透過&nbsp;<span class="color-purple">HTTP API (XRPC)</span>&nbsp;實作一個能自動發文、回覆、按讚的機器人</span>
   </div>
-  <div v-click="[7, 8]" class="absolute inset-x-0 flex justify-center gap-3 flex-wrap">
+  <div v-click="[10, 11]" class="absolute inset-x-0 flex justify-center mt-20  gap-3 flex-wrap">
     <span class="inline-flex border border-white/40 rounded-xl px-5 py-2">建立&nbsp;<span class="color-purple">Feed Generator</span>，根據自訂規則篩選貼文，打造專屬的個人化動態牆</span>
   </div>
 </div>
 
 <style>
-.slidev-vclick-target {
-    transition: opacity 0.5s ease;
-}
-
-.slidev-vclick-hidden {
-  opacity: 0.2 !important;
-  pointer-events: none;
-}
-
 .details-area .slidev-vclick-hidden {
   opacity: 0 !important;
 }
 </style>
+
+---
+---
+
+# 中心化 / Fediverse / AT Protocol 的比較
+
+<div class="grid grid-cols-3 gap-8 mt-12 items-stretch">
+  <CompareCard v-click="[1, 2]" title="中心化平台" desc="Twitter、Facebook、Threads (專有軟體，<br>半殘 ActivityPub 實作)">
+    <template #icon><lucide:building-2 class="text-6xl" /></template>
+  </CompareCard>
+  <CompareCard v-click="[2, 3]" title="Fediverse (ActivityPub)" desc="Mastodon、Misskey">
+    <template #icon><lucide:square-asterisk class="text-6xl" /></template>
+  </CompareCard>
+  <CompareCard v-click="[3, 4]" title="AT Protocol" desc="Bluesky、Tangled">
+    <template #icon><lucide:at-sign class="text-6xl" /></template>
+  </CompareCard>
+</div>
+
+---
+---
+
+# 中心化 / Fediverse / AT Protocol 的比較
+
+<div class="flex items-center gap-16 h-9/10 ml-16">
+  <CompareCard class="shrink-0 w-64" title="中心化平台" desc="Twitter、Facebook、Threads (專有軟體，<br>半殘 ActivityPub 實作)">
+    <template #icon><lucide:building-2 class="text-6xl" /></template>
+  </CompareCard>
+  <div class="text-left text-2xl space-y-6">
+    <li v-click="[1, 2]">單一公司營運並控制所有資料</li>
+    <li v-click="[2, 3]">使用者<span class="color-red">無法</span>選擇演算法或遷移帳號</li>
+    <li v-click="[3, 4]">平台可任意<span class="color-red">更改規則、封鎖帳號</span></li>
+  </div>
+</div>
+
+---
+---
+
+# 中心化 / Fediverse / AT Protocol 的比較
+
+<div class="flex items-center gap-16 h-9/10 ml-16">
+  <CompareCard class="shrink-0 w-64" title="Fediverse (ActivityPub)" desc="Mastodon、Misskey">
+    <template #icon><lucide:square-asterisk class="text-6xl" /></template>
+  </CompareCard>
+  <div class="text-left text-2xl space-y-6">
+      <li v-click="[1, 3]" class="!leading-[2]">伺服器之間透過 ActivityPub 協定互聯<br><span v-click="[2, 3]" class="text-xl color-zinc">雖一定程度達成去中心化，但隨著<span class="text-xl color-red">節點增多</span>，透過此協定互聯的伺服器頻寬和儲存負擔也將更大</span></li>
+    <li v-click="[3, 4]">帳號綁定在特定伺服器上，不易遷移</li>
+    <li v-click="[4, 5]">伺服器無預警關閉時，資料將會遺失</li>
+  </div>
+</div>
+
+---
+---
+
+# 中心化 / Fediverse / AT Protocol 的比較
+
+<div class="flex items-center gap-16 h-9/10 ml-16">
+  <CompareCard class="shrink-0 w-64" title="AT Protocol" desc="Bluesky、Tangled">
+    <template #icon><lucide:at-sign class="text-6xl" /></template>
+  </CompareCard>
+  <div class="text-left text-2xl space-y-6">
+    <li>嘗試解決前面協定的相關問題</li>
+    <li>去中心化身份架構 (did:plc)<br>達成在不同資料伺服器 (PDS) 間遷移帳號</li>
+    <li>Lexicon 結構定義語言<br>允許不同類型的應用程式 (App View) 運行在同一個協定上</li>
+  </div>
+</div>
+
+---
+---
+
+# 中心化 / Fediverse / AT Protocol 的比較
+
+<div class="flex items-center gap-16 h-9/10 ml-16">
+  <CompareCard class="shrink-0 w-64" title="AT Protocol" desc="Bluesky、Tangled">
+    <template #icon><lucide:at-sign class="text-6xl" /></template>
+  </CompareCard>
+  <div class="text-left text-2xl space-y-6">
+    <li>Lorem ipsum dolor sit amet<br>Ut bibendum lacinia nibh convallis maximus. Nunc congue magna nec dignissim malesuada. </li>
+  </div>
+</div>
