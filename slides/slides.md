@@ -201,7 +201,7 @@ class: text-center
   </div>
   <div v-click="[7, 8]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
     <lucide:newspaper class="text-5xl mb-4" />
-    <p class="text-center text-lg font-bold !leading-[2]">實作<span v-mark.underline.purple="[3, 4]" class="color-lime">自己的演算法</span><br>讓河道顯示想看的內容！</p>
+    <p class="text-center text-lg font-bold !leading-[2]">實作<span v-mark.underline.lime="[7, 8]" class="color-lime">自己的演算法</span><br>讓河道顯示想看的內容！</p>
   </div>
 </div>
 
