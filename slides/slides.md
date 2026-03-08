@@ -126,3 +126,54 @@ dragPos:
   pointer-events: none;
 }
 </style>
+
+---
+class: text-center
+---
+
+# 第一堂課程規劃
+
+<div class="grid grid-cols-3 gap-6 mt-8">
+  <div v-click="[1, 6]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
+    <lucide:at-sign class="text-5xl mb-4" />
+    <p class="text-center text-lg font-bold !leading-[2]"><span class="color-orange">AT Protocol</span> 是什麼？</p>
+  </div>
+  <div v-click="[6, 7]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
+    <lucide:bot class="text-5xl mb-4" />
+    <p class="text-center text-lg font-bold !leading-[2]">實作一個<span class="color-rose">機器人</span><br>在 Bluesky 上互動</p>
+  </div>
+  <div v-click="[7, 8]" class="flex flex-col items-center justify-center border border-white/20 rounded-xl p-6 h-full">
+    <lucide:newspaper class="text-5xl mb-4" />
+    <p class="text-center text-lg font-bold !leading-[2]">實作<span v-mark.underline.purple="[3, 4]" class="color-lime">自己的演算法</span><br>讓河道顯示想看的內容！</p>
+  </div>
+</div>
+
+<div class="details-area relative mt-20 text-white/80 text-xl h-12">
+  <div v-click="[1, 6]" class="absolute inset-x-0 flex justify-center gap-3 flex-wrap">
+    <span v-mark.box.pink="[2, 3]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">設計理念</span>
+    <span v-mark.box.pink="[3, 4]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">身份系統 (DID)</span>
+    <span v-mark.box.pink="[4, 5]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">資料儲存（PDS)</span>
+    <span v-mark.box.pink="[5, 6]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">與&nbsp;<span class="color-blue">Bluesky</span>&nbsp;(App View) 的關係</span>
+  </div>
+  <div v-click="[6, 7]" class="absolute inset-x-0 flex justify-center gap-3 flex-wrap">
+    <span class="inline-flex border border-white/40 rounded-xl px-5 py-2">透過&nbsp;<span class="color-purple">HTTP API (XRPC)</span>&nbsp;實作一個能自動發文、回覆、按讚的機器人</span>
+  </div>
+  <div v-click="[7, 8]" class="absolute inset-x-0 flex justify-center gap-3 flex-wrap">
+    <span class="inline-flex border border-white/40 rounded-xl px-5 py-2">建立&nbsp;<span class="color-purple">Feed Generator</span>，根據自訂規則篩選貼文，打造專屬的個人化動態牆</span>
+  </div>
+</div>
+
+<style>
+.slidev-vclick-target {
+    transition: opacity 0.5s ease;
+}
+
+.slidev-vclick-hidden {
+  opacity: 0.2 !important;
+  pointer-events: none;
+}
+
+.details-area .slidev-vclick-hidden {
+  opacity: 0 !important;
+}
+</style>
