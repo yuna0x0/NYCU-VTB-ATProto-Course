@@ -37,7 +37,7 @@ colorSchema: dark
 
 <div class="inline-flex items-center gap-3 border border-white/40 rounded-xl px-5 py-2">
   <img src="https://yuna0x0.com/avatar.webp" class="w-8 h-8 rounded-full" />
-  <span><a href="https://yuna0x0.com" class="!border-none">Yuna | 星ノ宮ゆうな</a></span>
+  <span><a href="https://yuna0x0.com" class="!border-none">悠奈喵 (yuna0x0)</a></span>
 </div>
 
 <!--<div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10"> <carbon:arrow-right />
@@ -51,6 +51,63 @@ colorSchema: dark
     <carbon:logo-github />
   </a>
 </div>
+
+---
+dragPos:
+  at-icon: 504,21,87,91,-5
+  bsky-icon: 852,422,102,91,5
+  ema: 477,35,320,745,-5
+  vtb-logo: 298,26,66,66,6
+  hiro: 648,20,297,713,5
+---
+
+<img src="./assets/sky.png" class="absolute inset-0 w-full h-full object-cover -z-2" />
+<div class="absolute inset-0 bg-black/50 -z-1" />
+
+<div class="flex h-full">
+<div class="w-1/2 flex flex-col justify-center text-left">
+
+<p class="text-white/60 !mb-0">交大 VTuber 社 - 114-2 社課</p>
+<h1 class="!mt-2 !mb-4">AT Protocol 從零開始喵</h1>
+
+<div class="inline-flex items-center gap-3 border border-white/40 rounded-xl px-4 py-1.5 mb-6 self-start text-sm">
+  <img src="https://yuna0x0.com/avatar.webp" class="w-6 h-6 rounded-full" />
+  <span><a href="https://yuna0x0.com" class="!border-none">悠奈喵 (yuna0x0)</a></span>
+</div>
+
+<div class="flex flex-col text-lg">
+  <div class="flex gap-6 py-3 border-b border-white/20">
+    <span class="font-bold color-#f291a5">03/13</span>
+    <span>AT Protocol 是什麼？<br>實作自己的機器人和演算法！</span>
+  </div>
+  <div class="flex gap-6 py-3 border-b border-white/20">
+    <span class="font-bold color-#f291a5">03/20</span>
+    <span>OAuth 驗證和你的第一個社交應用程式</span>
+  </div>
+  <div class="flex gap-6 py-3">
+    <span class="font-bold color-#f291a5">03/27</span>
+    <span>Link in Bio on AT Protocol</span>
+  </div>
+</div>
+
+<div class="mt-8 text-white/60 text-base space-y-2">
+  <div><lucide:clock class="inline-block mr-1" />星期五 19:00 ~ 21:00 | 第 3 - 5 週</div>
+  <div><lucide:map-pin class="inline-block mr-1" />交大活動中心 537 & Discord 線上</div>
+</div>
+
+</div>
+<div class="w-1/2">
+</div>
+</div>
+
+<img v-drag="'hiro'" src="./assets/Hiro_Arms1_Default.png" class="w-50" />
+<img v-drag="'ema'" src="./assets/Ema_ArmR3_ArmL7_Smile.png" class="w-50" />
+<img v-drag="'vtb-logo'" src="./assets/nycu_vtb_logo_t.png" class="w-20" />
+
+<!--
+<div v-drag="'at-icon'" class="w-full h-full"><lucide:at-sign class="w-full h-full" style="color: #0085ff" /></div>
+<img v-drag="'bsky-icon'" src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Bluesky_Logo.svg" class="w-20" />
+-->
 
 ---
 dragPos:
@@ -91,7 +148,7 @@ dragPos:
 </div>
 <div class="ml-[50%] pl-8">
 
-# **Yuna | 星ノ宮ゆうな**
+# **悠奈喵 (yuna0x0)**
 
 <h2 v-click="[1, 2]">熱愛研究各種東西<br>和開發遊戲的貓娘 :3</h2>
 
