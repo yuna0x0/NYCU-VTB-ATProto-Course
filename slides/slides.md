@@ -180,7 +180,7 @@ class: text-center
 <div class="details-area relative text-white/80 text-xl h-12">
   <div v-click="[1, 9]" class="absolute inset-x-0 flex justify-center mt-14 gap-6 flex-wrap">
     <span v-mark.box.pink="[2, 3]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">協定架構</span>
-    <span v-mark.box.pink="[3, 4]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">身份系統 (DID PLC)</span>
+    <span v-mark.box.pink="[3, 4]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">身份系統 (DID)</span>
     <span v-mark.box.pink="[4, 5]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">資料儲存 (PDS)</span>
     <span v-mark.box.pink="[5, 6]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">資料結構 (Lexicon)</span>
     <span v-mark.box.pink="[6, 7]" class="inline-flex border border-white/40 rounded-xl px-5 py-2">中繼 (Firehose / Jetstream)</span>
@@ -260,9 +260,9 @@ class: text-center
     <template #icon><lucide:at-sign class="text-6xl" /></template>
   </CompareCard>
   <div class="text-left text-2xl space-y-6">
-    <li>嘗試解決前面協定的相關問題</li>
-    <li>去中心化身份架構 (did:plc)<br>達成在不同資料伺服器 (PDS) 間遷移帳號</li>
-    <li>Lexicon 結構定義語言<br>允許不同類型的應用程式 (App View) 運行在同一個協定上</li>
+    <li v-click="[1, 2]">嘗試解決前面協定的相關問題</li>
+    <li v-click="[2, 4]" class="color-purple">去中心化身份架構 (DID)<br><span v-click="[3, 4]" class="color-zinc">達成在不同<span class="color-lime">資料伺服器 (PDS)</span> 間遷移帳號</span></li>
+    <li v-click="[4, 6]" class="color-purple">Lexicon 結構定義語言<br><span v-click="[5, 6]" class="color-zinc">允許不同類型的<span class="color-lime">應用程式 (App View)</span> 運行在同一個協定上</span></li>
   </div>
 </div>
 
@@ -276,6 +276,56 @@ class: text-center
     <template #icon><lucide:at-sign class="text-6xl" /></template>
   </CompareCard>
   <div class="text-left text-2xl space-y-6">
-    <li>Lorem ipsum dolor sit amet<br>Ut bibendum lacinia nibh convallis maximus. Nunc congue magna nec dignissim malesuada. </li>
+    <li v-click="[1, 3]" class="color-purple">中繼 (Firehose / Jetstream)<br><span v-click="[2, 3]" class="color-zinc">負責串流即時網路活動，並解決 ActivityPub 等協定中，節點增多，<br>資源負擔增大的問題。</span></li>
   </div>
 </div>
+
+---
+dragPos:
+  spot-1: 51,119,229,409
+  spot-2: 159,120,256,408
+  spot-3: 280,120,383,415
+  spot-4: 415,119,494,415
+---
+
+# AT Protocol 架構圖
+
+<div class="flex items-center justify-center h-full overflow-hidden -mt-4">
+<img src="./assets/Bluesky–AT_Protocol_federation_architecture.svg" class="max-h-[90%] max-w-full object-contain" />
+</div>
+
+<div v-click="[1, 2]" v-drag="'spot-1'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+<div v-click="[2, 3]" v-drag="'spot-2'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+<div v-click="[3, 4]" v-drag="'spot-3'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+<div v-click="[4, 5]" v-drag="'spot-4'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+
+<style>
+.slidev-vclick-hidden {
+  opacity: 0 !important;
+}
+</style>
+
+---
+dragPos:
+  spot-1: 531,258,400,151
+  spot-2: 40,331,410,40
+  spot-3: 45,254,401,115
+  spot-4: 272,255,658,114
+---
+
+# DID 架構圖
+
+<div class="flex items-center justify-center h-full">
+<img src="./assets/AT_Protocol_Identity_Architecture.svg" class="max-h-full max-w-full object-contain" />
+</div>
+
+<div v-click="[1, 2]" v-drag="'spot-1'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+<div v-click="[2, 3]" v-drag="'spot-2'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+<div v-click="[3, 4]" v-drag="'spot-3'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+<div v-click="[4, 5]" v-drag="'spot-4'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
+
+<style>
+.slidev-vclick-hidden {
+  opacity: 0 !important;
+}
+</style>
