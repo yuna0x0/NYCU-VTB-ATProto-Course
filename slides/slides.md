@@ -121,14 +121,16 @@ dragPos:
 ---
 
 <div class="absolute top-0 left-0 bottom-0 w-1/2 overflow-hidden">
-<video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover hue-rotate-130">
-<source src="./assets/sakana.mp4" type="video/mp4" />
-</video>
-<div class="absolute inset-0 bg-black/30" />
-<div class="absolute bottom-0 left-0 right-0 flex justify-center z-10">
-<SakanaWidget />
+    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover hue-rotate-130">
+        <source src="./assets/sakana.mp4" type="video/mp4" />
+    </video>
+    <div class="absolute inset-0 bg-black/30">
+        <div class="absolute bottom-0 left-0 right-0 flex justify-center z-10">
+            <SakanaWidget />
+        </div>
+    </div>
 </div>
-</div>
+
 <div class="ml-[50%] pl-8">
 
 # **悠奈喵 (yuna0x0)**
