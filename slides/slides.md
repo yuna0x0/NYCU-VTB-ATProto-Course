@@ -171,9 +171,9 @@ class: text-center
   <p v-click="[2, 3]" class="absolute text-4xl font-bold !leading-[1.8]">但在中心化平台上<br>你的身分和資料，<span class="color-red">始終不是你的</span></p>
   <div v-click="[3, 10]" class="absolute text-4xl space-y-14">
     <p class="text-white/60 mb-4">中心化平台能在一朝一夕之間：</p>
-    <p v-click="4"><span v-mark.cross.red="5">你長久建立的<b>朋友圈</b></span></p>
-    <p v-click="6"><span v-mark.cross.red="7">你耗費心力經營的<b>帳號</b></span></p>
-    <p v-click="8"><span v-mark.cross.red="9">你對於生活的種種<b>足跡與紀錄</b></span></p>
+    <p v-click="4"><span v-mark.cross.red="5">你長久建立的<b class="color-purple">朋友圈</b></span></p>
+    <p v-click="6"><span v-mark.cross.red="7">你耗費心力經營的<b class="color-purple">帳號</b></span></p>
+    <p v-click="8"><span v-mark.cross.red="9">你對於生活的種種<b class="color-purple">足跡與紀錄</b></span></p>
   </div>
   <p v-click="[10, 11]" class="absolute text-4xl font-bold">我們難道只能坐以待斃嗎？</p>
   <p v-click="[11, 12]" class="absolute text-3xl !leading-[2]">Mastodon、Misskey 等建構於 ActivityPub 上的平台<br>讓身分和資料得以分散於獨立伺服器當中</p>
@@ -185,9 +185,10 @@ class: text-center
   <p v-click="[17, 18]" class="absolute text-4xl !leading-[2]">不僅如此，因為 AT Protocol 的結構定義語言設計，它不單單能作為微部落格平台</p>
   <div v-click="[18, 23]" class="absolute text-4xl space-y-12 fade-list">
     <p class="text-white/60 mb-4">還能搭建：</p>
-    <p v-click="[19, 20]">代碼存儲平台 (eg, Tangled)</p>
-    <p v-click="[20, 21]">繪圖/茶繪平台 (eg, PinkSea)</p>
-    <p v-click="[21, 22]">...</p>
+    <p v-click="[19, 20]">代碼存儲平台 (eg, <a href="https://tangled.org">Tangled</a>)</p>
+    <p v-click="[20, 21]">繪圖/茶繪平台 (eg, <a href="https://pinksea.art">PinkSea</a>)</p>
+    <p v-click="[21, 22]">部落格 (eg, <a href="https://about.leaflet.pub">Leaflet</a>)</p>
+    <p v-click="[22, 23]">...</p>
   </div>
   <p v-click="[23, 24]" class="absolute text-4xl">因此希望藉此機會，讓大家了解這樣最新的技術</p>
   <p v-click="24" class="absolute text-4xl !leading-[2]">說不定下一個創造人人都在用的平台<br>就是<span v-mark.circle.pink="24">你</span> :3</p>
@@ -468,7 +469,6 @@ dragPos:
 <img src="./assets/for-you-feed.png" class="h-[50%] object-contain" />
 <img src="./assets/for-you-feed-qrcode.webp" class="h-[50%] object-contain" />
 </div>
-
 
 ---
 ---
