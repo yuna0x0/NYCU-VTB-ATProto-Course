@@ -185,7 +185,7 @@ class: text-center
   <p v-click="[17, 18]" class="absolute text-4xl !leading-[2]">不僅如此，因為 AT Protocol 的結構定義語言設計，它不單單能作為微部落格平台</p>
   <div v-click="[18, 23]" class="absolute text-4xl space-y-12 fade-list">
     <p class="text-white/60 mb-4">還能搭建：</p>
-    <p v-click="[19, 20]">代碼存儲平台 (eg, <a href="https://tangled.org">Tangled</a>)</p>
+    <p v-click="[19, 20]">代碼託管平台 (eg, <a href="https://tangled.org">Tangled</a>)</p>
     <p v-click="[20, 21]">繪圖/茶繪平台 (eg, <a href="https://pinksea.art">PinkSea</a>)</p>
     <p v-click="[21, 22]">部落格 (eg, <a href="https://about.leaflet.pub">Leaflet</a>)</p>
     <p v-click="[22, 23]">...</p>
@@ -459,6 +459,72 @@ dragPos:
   opacity: 0 !important;
 }
 </style>
+
+---
+---
+
+# 個人資料伺服器 (PDS)
+
+<div class="flex gap-12 h-[80%] mt-4">
+<div class="flex-1 flex flex-col justify-center">
+
+<p v-click="[1, 2]" class="text-2xl font-bold color-blue">「你在 AT Protocol 上的家」</p>
+
+<div class="h-8"></div>
+
+<div class="text-xl space-y-4">
+<li v-click="[2, 3]">託管你的<span class="color-purple font-bold">資料倉庫 (Data Repository)</span><br>類似 Git 但用於資料庫記錄</li>
+<li v-click="[3, 4]">管理你的<span class="color-purple font-bold">身份 (DID)</span>、帳號、簽章金鑰</li>
+<li v-click="[4, 5]">處理驗證、授權，並代理請求至其他服務</li>
+<li v-click="[5, 6]">資料可透過 CAR 檔匯出，自由<span class="color-lime font-bold">遷移</span>至其他 PDS</li>
+</div>
+
+</div>
+<div class="flex-1 flex flex-col justify-center">
+
+<div v-click="[6, 7]" class="space-y-3">
+<p class="text-white/60 text-lg mb-2">PDS 實作：</p>
+<div class="flex flex-col gap-2">
+  <span class="border border-white/30 rounded-xl px-4 py-2 text-base"><a href="https://github.com/bluesky-social/pds">官方 PDS</a> — TypeScript，Bluesky 官方參考實作</span>
+  <span class="border border-white/30 rounded-xl px-4 py-2 text-base"><a href="https://tangled.org/tranquil.farm/tranquil-pds">Tranquil</a> — Rust，支援 Passkey / 2FA / SSO</span>
+  <span class="border border-white/30 rounded-xl px-4 py-2 text-base"><a href="https://tangled.org/hailey.at/cocoon">Cocoon</a> — Go，輕量級實驗性 PDS</span>
+</div>
+</div>
+
+<div v-click="7" class="space-y-3 mt-4">
+<p class="text-white/60 text-lg mb-2">搬家工具：</p>
+<div class="flex flex-col gap-2">
+  <span class="border border-white/30 rounded-xl px-4 py-2 text-base"><a href="https://pdsmoover.com">PDS MOOver</a> — 遷移、備份、還原帳號</span>
+  <span class="border border-white/30 rounded-xl px-4 py-2 text-base"><a href="https://github.com/bluesky-social/goat">goat</a> — AT Protocol CLI 工具</span>
+</div>
+</div>
+
+</div>
+</div>
+
+---
+---
+
+# 結構定義語言 (Lexicon)
+
+
+---
+---
+
+# 中繼 (Firehose / Jetstream)
+
+
+---
+---
+
+# App View
+
+
+---
+---
+
+# 與 Bluesky 的關係
+
 
 ---
 ---
