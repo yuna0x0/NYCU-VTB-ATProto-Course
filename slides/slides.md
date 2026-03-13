@@ -1,6 +1,5 @@
 ---
 theme: seriph
-background: ./assets/sky.webp
 title: AT Protocol 從零開始喵
 info: |
   交大 VTuber 社 114-2 社課
@@ -17,6 +16,9 @@ themeConfig:
   primary: '#f291a5'
 colorSchema: dark
 ---
+
+<img src="./assets/sky.webp" class="absolute inset-0 w-full h-full object-cover -z-2" />
+
 # AT Protocol 從零開始喵
 
 <br>
