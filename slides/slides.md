@@ -26,7 +26,7 @@ colorSchema: dark
 <NameCard />
 
 <div class="abs-br m-6 text-xl">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
+  <button v-if="__DEV__" @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
     <carbon:edit />
   </button>
   <a href="https://github.com/yuna0x0/NYCU-VTB-ATProtoCourse" target="_blank" class="slidev-icon-btn">
