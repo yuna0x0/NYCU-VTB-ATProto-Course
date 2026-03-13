@@ -29,7 +29,7 @@ colorSchema: dark
   <button v-if="__DEV__" @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
     <carbon:edit />
   </button>
-  <a href="https://github.com/yuna0x0/NYCU-VTB-ATProtoCourse" target="_blank" class="slidev-icon-btn">
+  <a href="https://github.com/yuna0x0/NYCU-VTB-ATProto-Course" target="_blank" class="slidev-icon-btn">
     <carbon:logo-github />
   </a>
 </div>
