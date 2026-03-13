@@ -567,7 +567,7 @@ dragPos:
 </div>
 <div class="flex-1 flex flex-col justify-center">
 
-<div v-click="[5, 6]" class="space-y-3">
+<div v-click="[4, 5]" class="space-y-3">
 <p class="text-white/60 text-lg mb-2">Firehose vs Jetstream：</p>
 <div class="flex flex-col gap-2 text-base">
   <span class="border border-white/30 rounded-xl px-4 py-2"><lucide-rss class="inline text-orange size-4 mr-1" /> <b>Firehose</b> | 二進位 CBOR/CAR，含密碼學簽章，可驗證</span>
@@ -575,7 +575,7 @@ dragPos:
 </div>
 </div>
 
-<div v-click="6" class="space-y-3 mt-4">
+<div v-click="5" class="space-y-3 mt-4">
 <p class="text-white/60 text-lg mb-2">注意事項：</p>
 <div class="flex flex-col gap-2 text-base">
   <span class="border border-red/30 rounded-xl px-4 py-2"><lucide-shield-off class="inline text-red size-4 mr-1" /> Jetstream <span class="color-red font-bold">不含密碼學簽章</span>，不適合備份或審查</span>
