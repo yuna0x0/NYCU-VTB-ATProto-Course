@@ -27,6 +27,7 @@ slides/          # 課程簡報 (Slidev)
 pnpm install
 pnpm slides:dev    # 啟動簡報開發伺服器
 pnpm slides:build  # 建置簡報
+pnpm slides:export # 匯出 PDF
 ```
 
 ## Agent Skills
