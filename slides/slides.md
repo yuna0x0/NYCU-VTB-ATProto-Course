@@ -816,6 +816,44 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 </div>
 
 ---
+
+# 去中心化的不可能三角
+
+<div class="flex h-[85%] mt-4">
+<div class="flex-[3] flex items-center justify-center">
+
+<svg viewBox="-20 0 340 280" class="h-[85%]">
+  <polygon points="150,30 270,240 30,240" fill="none" stroke="#888" stroke-width="2" />
+  <text x="150" y="22" text-anchor="middle" fill="#ccc" font-size="5">安全性</text>
+  <text x="270" y="268" text-anchor="middle" fill="#ccc" font-size="5">效能</text>
+  <text x="30" y="268" text-anchor="middle" fill="#ccc" font-size="5">去中心化</text>
+</svg>
+
+</div>
+<div class="flex-[2] flex flex-col justify-center">
+
+<div class="space-y-12">
+<div v-click="[1, 2]">
+<p class="text-xl">AT Protocol 目前最弱的一環：</p>
+<p class="text-2xl font-bold color-red mt-2">DID PLC</p>
+</div>
+
+<div v-click="[2, 3]">
+<p class="text-lg text-white/60">DID 雖然可被鏡像和驗證</p>
+<p class="text-lg text-white/60 mt-1">但目前所有應用都依賴<span class="color-orange font-bold">單一實例</span>：</p>
+<p class="text-xl font-bold mt-2"><a href="https://plc.directory" target="_blank">plc.directory</a></p>
+</div>
+
+<div v-click="3">
+<p class="text-lg text-white/60">若此服務故障或被控制</p>
+<p class="text-lg text-white/60">整個身分系統將面臨<span class="color-red font-bold">單點故障</span>風險</p>
+</div>
+</div>
+
+</div>
+</div>
+
+---
 ---
 
 # 本週作業：熟悉 [PDSls](https://pdsls.dev)，未來開發會時常用到它
