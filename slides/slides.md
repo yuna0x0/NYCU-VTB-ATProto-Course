@@ -592,7 +592,7 @@ dragPos:
 <div class="flex gap-8 h-[80%] mt-4">
 <div class="flex-[3] flex flex-col justify-start">
 
-```bash {all|0}
+```bash {0|all|0}
 websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 ```
 
@@ -623,17 +623,17 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 
 <div class="flex-[2] flex flex-col justify-center text-base space-y-2 mt-8">
 
-<p v-click.hide="1" class="color-zinc">連線至 Jetstream</p>
-<p v-click="[2, 3]" class="color-zinc">收到 JSON 事件</p>
-<p v-click="[3, 4]"><span class="color-purple font-bold">did</span> — 使用者身份</p>
-<p v-click="[4, 5]"><span class="color-purple font-bold">time_us</span> — 時間戳</p>
-<p v-click="[5, 6]"><span class="color-purple font-bold">kind</span> — 事件類型</p>
-<p v-click="[6, 7]"><span class="color-purple font-bold">commit</span> — 變更內容</p>
-<p v-click="[7, 8]"><span class="color-lime font-bold">rev</span> — repo 修訂版號</p>
-<p v-click="[8, 9]"><span class="color-lime font-bold">operation / collection</span> — 操作與集合</p>
-<p v-click="[9, 10]"><span class="color-lime font-bold">rkey / record</span> — 鍵值與內容</p>
-<p v-click="[10, 11]"><span class="color-lime font-bold">cid</span> — 內容雜湊</p>
-<p v-click="11" class="color-zinc">完整事件結構</p>
+<p v-click="[1, 2]" class="color-zinc">連線至 Jetstream</p>
+<p v-click="[3, 4]" class="color-zinc">收到 JSON 事件</p>
+<p v-click="[4, 5]"><span class="color-purple font-bold">did</span> — 使用者身份</p>
+<p v-click="[5, 6]"><span class="color-purple font-bold">time_us</span> — 時間戳</p>
+<p v-click="[6, 7]"><span class="color-purple font-bold">kind</span> — 事件類型</p>
+<p v-click="[7, 8]"><span class="color-purple font-bold">commit</span> — 變更內容</p>
+<p v-click="[8, 9]"><span class="color-lime font-bold">rev</span> — repo 修訂版號</p>
+<p v-click="[9, 10]"><span class="color-lime font-bold">operation / collection</span> — 操作與集合</p>
+<p v-click="[10, 11]"><span class="color-lime font-bold">rkey / record</span> — 鍵值與內容</p>
+<p v-click="[11, 12]"><span class="color-lime font-bold">cid</span> — 內容雜湊</p>
+<p v-click="12" class="color-zinc">完整事件結構</p>
 
 </div>
 </div>
