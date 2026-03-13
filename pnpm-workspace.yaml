@@ -1,0 +1,11 @@
+packages:
+  - slides
+  - 1-agent
+  - 2-custom-feed
+  - 3-oauth
+  - 4-social-app
+  - 5-link-in-bio
+
+onlyBuiltDependencies:
+  - esbuild
+  - playwright-chromium
