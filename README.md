@@ -1,6 +1,8 @@
 # AT Protocol 從零開始喵
 
-交大 VTuber 社 114-2 社課 — AT Protocol 課程教材與工作坊程式碼
+交大 VTuber 社 114-2 社課 - AT Protocol 課程教材與工作坊程式碼
+
+by [yuna0x0](https://github.com/yuna0x0)
 
 ## 課程大綱
 
