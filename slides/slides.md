@@ -839,7 +839,7 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 </div>
 
 <div v-click="[2, 3]">
-<p class="text-lg text-white/60">DID 雖然可被鏡像和驗證</p>
+<p class="text-lg text-white/60">PLC 雖然可被鏡像和驗證</p>
 <p class="text-lg text-white/60 mt-1">但目前所有應用都依賴<span class="color-orange font-bold">單一實例</span>：</p>
 <p class="text-xl font-bold mt-2"><a href="https://plc.directory" target="_blank">plc.directory</a></p>
 </div>
