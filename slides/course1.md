@@ -17,7 +17,7 @@ themeConfig:
 colorSchema: dark
 ---
 
-<img src="./assets/sky.webp" class="absolute inset-0 w-full h-full object-cover -z-2" />
+<img src="./assets/shared/sky.webp" class="absolute inset-0 w-full h-full object-cover -z-2" />
 
 # AT Protocol 從零開始喵
 
@@ -43,7 +43,7 @@ dragPos:
   hiro: 648,20,297,713,5
 ---
 
-<img src="./assets/sky.webp" class="absolute inset-0 w-full h-full object-cover -z-2" />
+<img src="./assets/shared/sky.webp" class="absolute inset-0 w-full h-full object-cover -z-2" />
 <div class="absolute inset-0 bg-black/50 -z-1" />
 
 <div class="flex h-full">
@@ -79,9 +79,9 @@ dragPos:
 </div>
 </div>
 
-<img v-drag="'hiro'" src="./assets/Hiro_Arms1_Default.webp" class="w-50" />
-<img v-drag="'ema'" src="./assets/Ema_ArmR3_ArmL7_Smile.webp" class="w-50" />
-<img v-drag="'vtb-logo'" src="./assets/nycu_vtb_logo_t.webp" class="w-20" />
+<img v-drag="'hiro'" src="./assets/shared/Hiro_Arms1_Default.webp" class="w-50" />
+<img v-drag="'ema'" src="./assets/shared/Ema_ArmR3_ArmL7_Smile.webp" class="w-50" />
+<img v-drag="'vtb-logo'" src="./assets/shared/nycu_vtb_logo_t.webp" class="w-20" />
 
 ---
 dragPos:
@@ -93,16 +93,16 @@ dragPos:
 
 ### 可以在 **<a href="https://discord.gg/GPBJPshrBU">交大 VTuber 社</a>** Discord 伺服器的 <a href="https://discord.com/channels/806901909356412949/1478581760270008474">`#at-protocol-by-yuna`</a> 頻道<br>發問！
 
-<img v-drag="'discord-help'" src="./assets/discord-help.webp">
+<img v-drag="'discord-help'" src="./assets/shared/discord-help.webp">
 
-<img v-drag="'sherry'" src="./assets/sherry.webp">
+<img v-drag="'sherry'" src="./assets/shared/sherry.webp">
 
 ---
 ---
 
 <div class="absolute top-0 left-0 bottom-0 w-1/2 overflow-hidden">
     <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover hue-rotate-130">
-        <source src="./assets/sakana.mp4" type="video/mp4" />
+        <source src="./assets/shared/sakana.mp4" type="video/mp4" />
     </video>
     <div class="absolute inset-0 bg-black/30">
         <div class="absolute bottom-0 left-0 right-0 flex justify-center z-10">
@@ -135,7 +135,7 @@ dragPos:
 
 <div v-click="6" class="flex items-center justify-center gap-4 mt-8">
     <h3>🥺 餵食 Yuna →</h3>
-    <img src="./assets/yuna-donate.webp" class="w-[130px]">
+    <img src="./assets/shared/yuna-donate.webp" class="w-[130px]">
 </div>
 
 </div>
@@ -315,72 +315,72 @@ class: text-center
 <div class="relative flex flex-col items-center justify-center h-[90%]">
 
 <div v-click.hide="1" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/1-traditional-web.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/1-traditional-web.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">傳統網頁應用：前端 + 後端 + 資料庫</p>
 </div>
 
 <div v-click="[1, 2]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/2-traditional-web-cache.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/2-traditional-web-cache.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">加入快取層應對效能瓶頸</p>
 </div>
 
 <div v-click="[2, 3]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/3-traditional-web-replica.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/3-traditional-web-replica.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">進一步將資料庫分片</p>
 </div>
 
 <div v-click="[3, 4]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/4-traditional-web-nosql.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/4-traditional-web-nosql.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">改用 NoSQL 實現<a href="https://en.wikipedia.org/wiki/Eventual_consistency">最終一致性</a>，提升擴展性</p>
 </div>
 
 <div v-click="[4, 5]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/5-traditional-web-nosql-view.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/5-traditional-web-nosql-view.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">加入 View Server 預先計算查詢，彌補 NoSQL 不足</p>
 </div>
 
 <div v-click="[5, 6]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/6-traditional-web-nosql-view-event.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/6-traditional-web-nosql-view-event.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">引入事件日誌（如 <a href="https://kafka.apache.org">Kafka</a>）確保 View Server 同步</p>
 </div>
 
 <div v-click="[6, 7]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/7-decentralized-web.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/7-decentralized-web.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">從傳統到分散式應用：將內部服務公開，讓外部節點參與</p>
 </div>
 
 <div v-click="[7, 8]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/8-pds.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/8-pds.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">引入個人資料伺服器 (PDS)，藉加密簽章確保資料真實性</p>
 </div>
 
 <div v-click="[8, 9]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/9-decentralized-pds.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/9-decentralized-pds.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">多個 PDS 節點分散託管使用者資料</p>
 </div>
 
 <div v-click="[9, 10]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/10-decentralized-appview-to-pds.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/10-decentralized-appview-to-pds.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">Appview 透過 OAuth 讀寫使用者 PDS</p>
 </div>
 
 <div v-click="[10, 11]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/11-decentralized-pds-to-event.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/11-decentralized-pds-to-event.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">寫入 PDS 後觸發事件日誌到 Relay</p>
 </div>
 
 <div v-click="[11, 12]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/12-decentralized-event-to-view.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/12-decentralized-event-to-view.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">Relay 將事件推送至各 View Server</p>
 </div>
 
 <div v-click="[12, 13]" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/13-decentralized-full.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/13-decentralized-full.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">最終達成完整的去中心化資料流循環</p>
 </div>
 
 <div v-click="13" class="absolute flex flex-col items-center gap-2">
-<img src="./assets/traditional-vs-decentralized/14-decentralized-full-high-scale.webp" class="h-[330px] object-contain" />
+<img src="./assets/course1/traditional-vs-decentralized/14-decentralized-full-high-scale.webp" class="h-[330px] object-contain" />
 <p class="text-2xl text-white/80">大規模分散式：更多節點、更多應用加入網路</p>
 </div>
 
@@ -401,7 +401,7 @@ dragPos:
 # AT Protocol 架構圖
 
 <div class="flex items-center justify-center h-full overflow-hidden -mt-4">
-<img src="./assets/Bluesky–AT_Protocol_federation_architecture.svg" class="max-h-[90%] max-w-full object-contain" />
+<img src="./assets/course1/Bluesky–AT_Protocol_federation_architecture.svg" class="max-h-[90%] max-w-full object-contain" />
 </div>
 
 <div v-click="[1, 2]" v-drag="'spot-1'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
@@ -426,7 +426,7 @@ dragPos:
 # DID 架構圖
 
 <div class="flex items-center justify-center h-full">
-<img src="./assets/AT_Protocol_Identity_Architecture.svg" class="max-h-full max-w-full object-contain" />
+<img src="./assets/course1/AT_Protocol_Identity_Architecture.svg" class="max-h-full max-w-full object-contain" />
 </div>
 
 <div v-click="[1, 2]" v-drag="'spot-1'" class="rounded-md" style="box-shadow: 0 0 0 9999px rgba(0,0,0,0.8)" />
@@ -661,7 +661,7 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 
 <div v-click="[5, 6]">
 <p class="text-white/60 text-lg mb-2"><code>app.bsky.*</code> 的公開端點主要由 Bluesky App View 提供：</p>
-<img src="./assets/app.bsky.actor.getProfile.webp" class="h-[200px] object-contain rounded-lg" />
+<img src="./assets/course1/app.bsky.actor.getProfile.webp" class="h-[200px] object-contain rounded-lg" />
 </div>
 
 <div v-click="6" class="space-y-3 mt-4">
@@ -719,8 +719,8 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 <h4 class="text-xl"><b class="color-lime">不再被平台演算法綁架：</b>建立自訂演算法，讓使用者訂閱自己想看的 Feed</h4>
 
 <div class="flex items-center justify-center gap-12 h-[70%]">
-<img src="./assets/for-you-feed.webp" class="h-[50%] object-contain" />
-<img src="./assets/for-you-feed-qrcode.webp" class="h-[50%] object-contain" />
+<img src="./assets/course1/for-you-feed.webp" class="h-[50%] object-contain" />
+<img src="./assets/course1/for-you-feed-qrcode.webp" class="h-[50%] object-contain" />
 </div>
 
 ---
@@ -732,13 +732,13 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
   <div class="flex-1 flex flex-col items-center">
     <p class="text-lg font-bold mb-2">For You</p>
     <video autoplay loop muted playsinline class="h-full rounded-lg object-contain">
-      <source src="./assets/for-you-timeline-demo.mp4" type="video/mp4" />
+      <source src="./assets/course1/for-you-timeline-demo.mp4" type="video/mp4" />
     </video>
   </div>
   <div class="flex-1 flex flex-col items-center">
     <p class="text-lg font-bold mb-2">Discover</p>
     <video autoplay loop muted playsinline class="h-full rounded-lg object-contain">
-      <source src="./assets/discover-timeline-demo.mp4" type="video/mp4" />
+      <source src="./assets/course1/discover-timeline-demo.mp4" type="video/mp4" />
     </video>
   </div>
 </div>
@@ -752,10 +752,10 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 
 <div class="flex items-center justify-center gap-8 h-[65%] mt-16">
 <div class="flex flex-col items-center gap-2 h-full">
-  <img v-click="[1, 2]" src="./assets/hailey-labeler.webp" class="h-[70%] object-contain" />
-  <img v-click="2" src="./assets/labeler-demo.webp" class="h-[35%] object-contain" />
+  <img v-click="[1, 2]" src="./assets/course1/hailey-labeler.webp" class="h-[70%] object-contain" />
+  <img v-click="2" src="./assets/course1/labeler-demo.webp" class="h-[35%] object-contain" />
 </div>
-<img v-click="1" src="./assets/hailey-labeler-qrcode.webp" class="h-[60%] object-contain" />
+<img v-click="1" src="./assets/course1/hailey-labeler-qrcode.webp" class="h-[60%] object-contain" />
 </div>
 
 ---
@@ -776,7 +776,7 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 </div>
 <div class="flex-[2] flex items-center justify-center overflow-hidden">
 
-<img src="./assets/bluesky-moderation-service-labels.webp" class="h-[100%] object-contain rounded-lg" />
+<img src="./assets/course1/bluesky-moderation-service-labels.webp" class="h-[100%] object-contain rounded-lg" />
 
 </div>
 </div>
@@ -808,7 +808,7 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 <div class="flex-1 relative">
 
 <div v-click="3" class="absolute -bottom-16 left-0 right-0 flex flex-col items-center scale-125 origin-bottom">
-<img src="./assets/hhi-shannon-index_accounts-on-decentralized-social-networks.webp" class="h-[280px] object-contain" />
+<img src="./assets/course1/hhi-shannon-index_accounts-on-decentralized-social-networks.webp" class="h-[280px] object-contain" />
 <p class="text-xs text-white/40 mt-1">來源：<a href="https://arewedecentralizedyet.online">arewedecentralizedyet.online</a></p>
 </div>
 
@@ -861,19 +861,19 @@ websocat wss://jetstream1.us-east.bsky.network/subscribe | jq . --unbuffered
 <p class="text-xl text-white/60">PDSls 是一個 AT Protocol 探索工具，可以瀏覽 AT Protocol 上的公開資料</p>
 
 <div class="flex items-center justify-center gap-6 h-[60%] mt-12">
-<img v-click="[1, 2]" src="./assets/pdsls-home.webp" class="h-[90%] object-contain rounded-lg" />
-<img v-click="[2, 3]" src="./assets/pdsls-collections.webp" class="h-[90%] object-contain rounded-lg" />
-<img v-click="3" src="./assets/pdsls-identity.webp" class="h-[90%] object-contain rounded-lg" />
+<img v-click="[1, 2]" src="./assets/course1/pdsls-home.webp" class="h-[90%] object-contain rounded-lg" />
+<img v-click="[2, 3]" src="./assets/course1/pdsls-collections.webp" class="h-[90%] object-contain rounded-lg" />
+<img v-click="3" src="./assets/course1/pdsls-identity.webp" class="h-[90%] object-contain rounded-lg" />
 </div>
 
 ---
 ---
 
-<img src="./assets/sky.webp" class="absolute inset-0 w-full h-full object-cover -z-2" />
+<img src="./assets/shared/sky.webp" class="absolute inset-0 w-full h-full object-cover -z-2" />
 <div class="absolute inset-0 bg-black/50 -z-1" />
 
 <div class="flex flex-col items-center justify-center h-full gap-6">
-<img src="./assets/ema-kiang.webp" class="h-[40%] object-contain rounded-xl" />
+<img src="./assets/shared/ema-kiang.webp" class="h-[40%] object-contain rounded-xl" />
 <h1 class="!text-4xl font-bold">謝謝大家！下週見喵 :3</h1>
 </div>
 

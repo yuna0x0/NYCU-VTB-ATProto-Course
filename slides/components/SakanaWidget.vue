@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import SakanaWidget from "sakana-widget";
 import "sakana-widget/lib/sakana.min.css";
-import yunyaImage from "../assets/yunya.webp";
+import yunyaImage from "../assets/shared/yunya.webp";
 
 const wrapper = ref(null);
 let widget = null;

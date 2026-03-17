@@ -2,9 +2,12 @@
   "name": "slides",
   "type": "module",
   "scripts": {
-    "build": "slidev build",
-    "dev": "slidev --open",
-    "export": "slidev export"
+    "dev": "slidev course1.md --open",
+    "dev:1": "slidev course1.md --open",
+    "build": "node scripts/build.mjs",
+    "build:1": "slidev build course1.md",
+    "export": "slidev export course1.md",
+    "export:1": "slidev export course1.md"
   },
   "dependencies": {
     "@slidev/cli": "^52.14.1",
