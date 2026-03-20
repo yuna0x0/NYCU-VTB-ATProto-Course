@@ -1,0 +1,46 @@
+{
+  "lexicon": 1,
+  "id": "com.example.nekosky.saved.item",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A saved post item, optionally linked to a folder.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["subject", "createdAt"],
+        "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "#strongRef",
+            "description": "Reference to the saved post."
+          },
+          "folder": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "Optional reference to a folder record."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when the post was saved."
+          }
+        }
+      }
+    },
+    "strongRef": {
+      "type": "object",
+      "required": ["uri", "cid"],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "cid": {
+          "type": "string",
+          "format": "cid"
+        }
+      }
+    }
+  }
+}

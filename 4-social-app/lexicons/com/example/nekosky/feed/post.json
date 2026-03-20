@@ -1,0 +1,61 @@
+{
+  "lexicon": 1,
+  "id": "com.example.nekosky.feed.post",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A simple post record for the Nekosky social app.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["text", "createdAt"],
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 3000,
+            "maxGraphemes": 300,
+            "description": "The post text content."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when the post was created."
+          },
+          "reply": {
+            "type": "ref",
+            "ref": "#replyRef",
+            "description": "Reply reference if this post is a reply."
+          }
+        }
+      }
+    },
+    "replyRef": {
+      "type": "object",
+      "required": ["root", "parent"],
+      "properties": {
+        "root": {
+          "type": "ref",
+          "ref": "#strongRef"
+        },
+        "parent": {
+          "type": "ref",
+          "ref": "#strongRef"
+        }
+      }
+    },
+    "strongRef": {
+      "type": "object",
+      "required": ["uri", "cid"],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "cid": {
+          "type": "string",
+          "format": "cid"
+        }
+      }
+    }
+  }
+}

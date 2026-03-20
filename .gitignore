@@ -16,5 +16,9 @@ CLAUDE.local.md
 .claude/agent-memory-local/
 .claude/worktrees/
 
+# Workshop
+.env
+*.db
+
 # Agents files
 .agents/

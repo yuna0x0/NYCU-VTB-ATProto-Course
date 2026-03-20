@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Social App — AT Protocol</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: system-ui, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        min-height: 100vh;
+      }
+
+      /* Header */
+      header {
+        background: #16213e;
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #333;
+      }
+      header h1 { font-size: 1.2rem; color: #f291a5; }
+      #user-info { display: flex; align-items: center; gap: 0.75rem; }
+      #user-info img { width: 32px; height: 32px; border-radius: 50%; }
+      #user-info span { font-size: 0.9rem; color: #aaa; }
+      #logout-btn {
+        padding: 0.4rem 1rem;
+        border: 1px solid #555;
+        border-radius: 6px;
+        background: transparent;
+        color: #aaa;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+      #logout-btn:hover { border-color: #f291a5; color: #f291a5; }
+
+      .container { max-width: 600px; margin: 0 auto; padding: 1rem; }
+
+      /* Login section */
+      #login-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        gap: 1rem;
+      }
+      #login-section h2 { color: #f291a5; margin-bottom: 1rem; }
+      #login-section input {
+        width: 300px;
+        padding: 0.75rem;
+        border: 1px solid #333;
+        border-radius: 8px;
+        background: #0f3460;
+        color: #fff;
+        font-size: 1rem;
+      }
+      #login-section button {
+        width: 300px;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 8px;
+        background: #f291a5;
+        color: #1a1a2e;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #login-section button:hover { opacity: 0.85; }
+      #login-section button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      /* App section */
+      #app-section { display: none; }
+
+      /* Compose box */
+      #compose {
+        background: #16213e;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      #compose textarea {
+        width: 100%;
+        min-height: 80px;
+        padding: 0.75rem;
+        border: 1px solid #333;
+        border-radius: 8px;
+        background: #0f3460;
+        color: #fff;
+        font-size: 1rem;
+        resize: vertical;
+      }
+      #compose .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem;
+      }
+      #char-count { font-size: 0.8rem; color: #666; }
+      #post-btn {
+        padding: 0.5rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        background: #f291a5;
+        color: #1a1a2e;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #post-btn:hover { opacity: 0.85; }
+      #post-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      /* Timeline */
+      .post-card {
+        background: #16213e;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+      }
+      .post-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+      }
+      .post-header img { width: 40px; height: 40px; border-radius: 50%; }
+      .post-author .name { font-weight: bold; font-size: 0.95rem; }
+      .post-author .handle { color: #888; font-size: 0.85rem; }
+      .post-text { line-height: 1.5; margin-bottom: 0.5rem; white-space: pre-wrap; }
+      .post-time { font-size: 0.8rem; color: #555; }
+
+      #load-more {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #333;
+        border-radius: 8px;
+        background: transparent;
+        color: #aaa;
+        cursor: pointer;
+        margin-bottom: 2rem;
+      }
+      #load-more:hover { border-color: #f291a5; color: #f291a5; }
+
+      /* User Status */
+      #user-status {
+        display: none;
+        font-size: 0.85rem;
+        color: #ccc;
+        background: #0f3460;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+      }
+      #status-edit-btn {
+        padding: 0.3rem 0.6rem;
+        border: 1px solid #555;
+        border-radius: 4px;
+        background: transparent;
+        color: #888;
+        cursor: pointer;
+        font-size: 0.75rem;
+      }
+      #status-edit-btn:hover { border-color: #f291a5; color: #f291a5; }
+
+      /* App Status Messages */
+      #status {
+        text-align: center;
+        padding: 1rem;
+        font-size: 0.9rem;
+        color: #888;
+      }
+      #status.error { color: #e74c3c; }
+    </style>
+  </head>
+  <body>
+    <!-- Login view -->
+    <div id="login-section">
+      <h2>Mini Social App</h2>
+      <input id="handle-input" type="text" placeholder="your.handle.social" />
+      <button id="login-btn">使用 OAuth 登入</button>
+      <div id="status"></div>
+    </div>
+
+    <!-- App view (shown after login) -->
+    <div id="app-section">
+      <header>
+        <h1>Mini Social App</h1>
+        <div id="user-info">
+          <img id="header-avatar" src="" alt="" />
+          <span id="header-handle"></span>
+          <span id="user-status"></span>
+          <button id="status-edit-btn">Set Status</button>
+          <button id="logout-btn">登出</button>
+        </div>
+      </header>
+
+      <div class="container">
+        <div id="compose">
+          <textarea id="post-text" placeholder="What's on your mind?"></textarea>
+          <div class="actions">
+            <span id="char-count">0 / 300</span>
+            <button id="post-btn">發文</button>
+          </div>
+        </div>
+
+        <div id="timeline"></div>
+        <button id="load-more" style="display: none;">載入更多</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

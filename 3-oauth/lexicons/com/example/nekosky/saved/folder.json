@@ -1,0 +1,28 @@
+{
+  "lexicon": 1,
+  "id": "com.example.nekosky.saved.folder",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A folder for organizing saved posts.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["name", "createdAt"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "The folder name."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when the folder was created."
+          }
+        }
+      }
+    }
+  }
+}

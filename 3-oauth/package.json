@@ -1,0 +1,23 @@
+{
+  "name": "3-oauth",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lex": "lex-cli"
+  },
+  "dependencies": {
+    "@atcute/atproto": "^3.1.10",
+    "@atcute/bluesky": "^3.3.0",
+    "@atcute/client": "^4.2.1",
+    "@atcute/identity-resolver": "^1.2.2",
+    "@atcute/oauth-browser-client": "^3.0.0"
+  },
+  "devDependencies": {
+    "@atcute/lex-cli": "^2.5.3",
+    "@atcute/lexicons": "^1.2.9",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.1"
+  }
+}

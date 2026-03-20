@@ -7,7 +7,10 @@
     "build": "node scripts/build.mjs",
     "build:1": "slidev build course1.md",
     "export": "slidev export course1.md",
-    "export:1": "slidev export course1.md"
+    "export:1": "slidev export course1.md",
+    "dev:2": "slidev course2.md --open",
+    "build:2": "slidev build course2.md --base /course2/ --out dist/course2",
+    "export:2": "slidev export course2.md"
   },
   "dependencies": {
     "@slidev/cli": "^52.14.1",

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Posts — AT Protocol OAuth</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: system-ui, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        min-height: 100vh;
+      }
+
+      /* Login */
+      #login-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .login-card {
+        max-width: 420px;
+        width: 100%;
+        padding: 2rem;
+        background: #16213e;
+        border-radius: 12px;
+      }
+      .login-card h1 { text-align: center; margin-bottom: 1.5rem; color: #f291a5; }
+      .login-card label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: #aaa; }
+      .login-card input {
+        width: 100%; padding: 0.75rem; border: 1px solid #333;
+        border-radius: 8px; background: #0f3460; color: #fff; font-size: 1rem; margin-bottom: 1rem;
+      }
+      .login-card button {
+        width: 100%; padding: 0.75rem; border: none; border-radius: 8px;
+        background: #f291a5; color: #1a1a2e; font-size: 1rem; font-weight: bold; cursor: pointer;
+      }
+      .login-card button:hover { opacity: 0.85; }
+      .login-card button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      /* App Layout */
+      #app-section {
+        display: none;
+        height: 100vh;
+      }
+
+      /* Header */
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1.5rem;
+        background: #16213e;
+        border-bottom: 1px solid #333;
+      }
+      .app-header h2 { color: #f291a5; font-size: 1.2rem; }
+      .user-info { display: flex; align-items: center; gap: 0.75rem; }
+      .user-info img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+      .user-info span { color: #aaa; font-size: 0.9rem; }
+      #logout-btn {
+        padding: 0.4rem 1rem; border: 1px solid #555; border-radius: 6px;
+        background: transparent; color: #aaa; cursor: pointer; font-size: 0.85rem;
+      }
+      #logout-btn:hover { border-color: #f291a5; color: #f291a5; }
+
+      /* Main Content */
+      .app-body { display: flex; flex: 1; overflow: hidden; }
+
+      /* Sidebar */
+      .sidebar {
+        width: 220px;
+        border-right: 1px solid #333;
+        background: #16213e;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      .sidebar-header {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #333;
+      }
+      .sidebar-header h3 { font-size: 0.95rem; color: #ccc; }
+      #new-folder-btn {
+        padding: 0.3rem 0.6rem; border: 1px solid #555; border-radius: 4px;
+        background: transparent; color: #aaa; cursor: pointer; font-size: 0.8rem;
+      }
+      #new-folder-btn:hover { border-color: #f291a5; color: #f291a5; }
+      .folder-item {
+        padding: 0.6rem 1rem; cursor: pointer; font-size: 0.9rem;
+        border-left: 3px solid transparent; transition: all 0.15s;
+      }
+      .folder-item:hover { background: #0f3460; }
+      .folder-item.active { border-left-color: #f291a5; background: #0f3460; color: #f291a5; }
+
+      /* Main Panels */
+      .main-panels { flex: 1; display: flex; overflow: hidden; }
+
+      /* Saved Posts Panel */
+      .saved-panel {
+        flex: 1; padding: 1rem; overflow-y: auto; border-right: 1px solid #333;
+      }
+      .saved-panel h3 { margin-bottom: 1rem; color: #ccc; font-size: 1rem; }
+      .saved-post-card {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.75rem; background: #16213e; border-radius: 8px; margin-bottom: 0.5rem;
+      }
+      .post-uri { font-size: 0.8rem; color: #888; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+      .remove-btn {
+        padding: 0.3rem 0.6rem; border: 1px solid #e74c3c; border-radius: 4px;
+        background: transparent; color: #e74c3c; cursor: pointer; font-size: 0.8rem; margin-left: 0.5rem;
+      }
+
+      /* Timeline Panel */
+      .timeline-panel {
+        flex: 1; padding: 1rem; overflow-y: auto;
+      }
+      .timeline-panel h3 { margin-bottom: 1rem; color: #ccc; font-size: 1rem; }
+      .timeline-post {
+        padding: 0.75rem; background: #16213e; border-radius: 8px; margin-bottom: 0.5rem;
+      }
+      .post-header { margin-bottom: 0.4rem; }
+      .post-header strong { color: #e0e0e0; }
+      .handle { color: #888; font-size: 0.85rem; margin-left: 0.5rem; }
+      .post-text { font-size: 0.9rem; color: #ccc; margin-bottom: 0.5rem; line-height: 1.4; }
+      .save-btn {
+        padding: 0.3rem 0.8rem; border: 1px solid #f291a5; border-radius: 4px;
+        background: transparent; color: #f291a5; cursor: pointer; font-size: 0.8rem;
+      }
+      .save-btn:hover { background: #f291a5; color: #1a1a2e; }
+      .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      .empty-state { color: #666; text-align: center; padding: 2rem; font-size: 0.9rem; }
+
+      /* Status */
+      #status { text-align: center; padding: 0.5rem; font-size: 0.9rem; color: #888; }
+      #status.error { color: #e74c3c; }
+    </style>
+  </head>
+  <body>
+    <div id="login-section">
+      <div class="login-card">
+        <h1>Saved Posts</h1>
+        <label for="handle-input">Your Bluesky Handle</label>
+        <input id="handle-input" type="text" placeholder="example.bsky.social" />
+        <button id="login-btn">OAuth Login</button>
+      </div>
+    </div>
+
+    <div id="app-section" style="display:none; flex-direction:column;">
+      <div class="app-header">
+        <h2>Saved Posts</h2>
+        <div class="user-info">
+          <img id="user-avatar" src="" alt="" />
+          <span id="user-handle"></span>
+          <button id="logout-btn">Logout</button>
+        </div>
+      </div>
+      <div class="app-body">
+        <div class="sidebar">
+          <div class="sidebar-header">
+            <h3>Folders</h3>
+            <button id="new-folder-btn">+ New</button>
+          </div>
+          <div id="folder-list"></div>
+        </div>
+        <div class="main-panels">
+          <div class="saved-panel">
+            <h3>Saved Posts</h3>
+            <div id="saved-posts">
+              <p class="empty-state">Implement the functions in saved.ts to get started!</p>
+            </div>
+          </div>
+          <div class="timeline-panel">
+            <h3>Your Timeline</h3>
+            <div id="timeline-posts">
+              <p class="empty-state">Loading timeline...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="status"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
