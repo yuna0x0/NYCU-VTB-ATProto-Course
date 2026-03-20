@@ -2,9 +2,9 @@
   "name": "2-custom-feed",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts",
-    "publish-feed": "tsx scripts/publish.ts"
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "start": "tsx --env-file=.env src/index.ts",
+    "publish-feed": "tsx --env-file=.env scripts/publish.ts"
   },
   "dependencies": {
     "@atcute/atproto": "^3.1.10",

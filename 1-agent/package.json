@@ -2,9 +2,9 @@
   "name": "1-agent",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts",
-    "publish-post": "tsx src/publish-post.ts"
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "start": "tsx --env-file=.env src/index.ts",
+    "publish-post": "tsx --env-file=.env src/publish-post.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.58",
