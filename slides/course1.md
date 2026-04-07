@@ -64,13 +64,13 @@ dragPos:
     <span>實作自己的機器人和演算法！<br>OAuth 驗證和你的第一個社交應用程式</span>
   </div>
   <div class="flex gap-6 py-3">
-    <span class="font-bold color-#f291a5">03/27</span>
+    <span class="font-bold color-#f291a5">04/24</span>
     <span>Link in Bio on AT Protocol</span>
   </div>
 </div>
 
 <div class="mt-8 text-white/60 text-base space-y-2">
-  <div><lucide:clock class="inline-block mr-1" />星期五 19:00 ~ 21:00 | 第 3 - 5 週</div>
+  <div><lucide:clock class="inline-block mr-1" />星期五 19:00 ~ 21:00</div>
   <div><lucide:map-pin class="inline-block mr-1" />交大活動中心 537 & Discord 線上</div>
 </div>
 

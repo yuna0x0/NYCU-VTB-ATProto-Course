@@ -15,6 +15,21 @@ export function createServer(
   // Health check
   app.get('/', (c) => c.text('Feed generator is running!'));
 
+  // DID document — Bluesky resolves did:web:<hostname> by fetching this endpoint
+  app.get('/.well-known/did.json', (c) => {
+    return c.json({
+      '@context': ['https://www.w3.org/ns/did/v1'],
+      id: `did:web:${feedHostname}`,
+      service: [
+        {
+          id: '#bsky_fg',
+          type: 'BskyFeedGenerator',
+          serviceEndpoint: `https://${feedHostname}`,
+        },
+      ],
+    });
+  });
+
   // Endpoint 1: Describe what feeds this generator provides
   // Bluesky calls this to discover available feeds
   app.get('/xrpc/app.bsky.feed.describeFeedGenerator', (c) => {
