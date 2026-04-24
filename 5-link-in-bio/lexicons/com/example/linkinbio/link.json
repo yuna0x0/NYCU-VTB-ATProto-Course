@@ -29,11 +29,6 @@
             "maxLength": 8,
             "description": "Optional emoji rendered next to the title."
           },
-          "order": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Sort position (lower values render first)."
-          },
           "createdAt": {
             "type": "string",
             "format": "datetime",

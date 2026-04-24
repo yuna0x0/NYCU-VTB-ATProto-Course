@@ -22,11 +22,6 @@ const _mainSchema = /*#__PURE__*/ v.record(
       ]),
     ),
     /**
-     * Sort position (lower values render first).
-     * @minimum 0
-     */
-    order: /*#__PURE__*/ v.optional(/*#__PURE__*/ v.integer()),
-    /**
      * Display title for the link button.
      * @minLength 1
      * @maxLength 640

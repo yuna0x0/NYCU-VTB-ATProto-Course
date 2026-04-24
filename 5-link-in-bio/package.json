@@ -13,7 +13,8 @@
     "@atcute/bluesky": "^3.3.0",
     "@atcute/client": "^4.2.1",
     "@atcute/identity-resolver": "^1.2.2",
-    "@atcute/oauth-browser-client": "^3.0.0"
+    "@atcute/oauth-browser-client": "^3.0.0",
+    "emoji-picker-element": "^1.29.1"
   },
   "devDependencies": {
     "@atcute/lex-cli": "^2.5.3",

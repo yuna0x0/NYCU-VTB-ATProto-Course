@@ -33,6 +33,16 @@ const _mainSchema = /*#__PURE__*/ v.record(
       ]),
     ),
     /**
+     * Ordered list of link record rkeys (tids) that defines the display order on the public page.
+     * @maxLength 200
+     */
+    linkOrder: /*#__PURE__*/ v.optional(
+      /*#__PURE__*/ v.constrain(
+        /*#__PURE__*/ v.array(/*#__PURE__*/ v.tidString()),
+        [/*#__PURE__*/ v.arrayLength(0, 200)],
+      ),
+    ),
+    /**
      * Personalized color + mode for this profile.
      */
     get theme() {

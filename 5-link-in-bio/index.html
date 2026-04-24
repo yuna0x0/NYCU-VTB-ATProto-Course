@@ -204,6 +204,13 @@
         padding: 0.6rem 0.75rem; background: var(--surface-alt); border-radius: 8px;
         margin-bottom: 0.5rem;
       }
+      .link-reorder { display: flex; flex-direction: column; gap: 2px; }
+      .link-reorder .icon-btn {
+        padding: 0 0.4rem; font-size: 0.65rem; line-height: 1.1;
+      }
+      .link-reorder .icon-btn:disabled {
+        opacity: 0.3; cursor: not-allowed; pointer-events: none;
+      }
       .link-row .link-emoji { font-size: 1.25rem; min-width: 1.5rem; text-align: center; }
       .link-row .link-info { flex: 1; min-width: 0; }
       .link-row .link-title { font-weight: 600; color: var(--fg); font-size: 0.95rem; }
@@ -223,18 +230,45 @@
       .add-link-form {
         margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
         display: grid; grid-template-columns: 3rem 1fr 1fr auto; gap: 0.4rem;
+        position: relative;
       }
       .add-link-form input {
         padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;
         background: var(--surface-alt); color: var(--fg); font-size: 0.9rem;
       }
       .add-link-form input:focus { outline: none; border-color: var(--accent); }
-      .add-link-form button {
+      .emoji-btn {
+        padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;
+        background: var(--surface-alt); color: var(--fg); cursor: pointer;
+        font-size: 1.1rem; line-height: 1; text-align: center;
+      }
+      .emoji-btn:hover { border-color: var(--accent); }
+      #emoji-picker-overlay {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 0.5rem); left: 0;
+        z-index: 30;
+        border-radius: 10px; overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      }
+      emoji-picker {
+        --background: var(--surface);
+        --border-color: var(--border);
+        --button-active-background: var(--surface-alt);
+        --button-hover-background: var(--surface-alt);
+        --indicator-color: var(--accent);
+        --input-border-color: var(--border);
+        --input-font-color: var(--fg);
+        --input-placeholder-color: var(--muted);
+        --category-font-color: var(--muted);
+        height: 340px;
+      }
+      .add-link-form button[type="submit"] {
         padding: 0.5rem 0.9rem; border: none; border-radius: 6px;
         background: var(--accent); color: var(--accent-ink);
         font-weight: 600; cursor: pointer; font-size: 0.9rem;
       }
-      .add-link-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+      .add-link-form button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }
 
       .empty-state {
         color: var(--dim); text-align: center; padding: 1.5rem 0.5rem; font-size: 0.9rem;
@@ -363,10 +397,14 @@
             <p class="empty-state">No links yet — add your first one below!</p>
           </div>
           <form id="add-link-form" class="add-link-form" autocomplete="off">
-            <input id="add-link-emoji" type="text" maxlength="2" placeholder="🔗" />
+            <button type="button" id="add-link-emoji-btn" class="emoji-btn" title="Pick an emoji">🔗</button>
+            <input id="add-link-emoji" type="hidden" />
             <input id="add-link-title" type="text" maxlength="64" placeholder="Title" required />
             <input id="add-link-url" type="url" placeholder="https://…" required />
             <button type="submit">Add</button>
+            <div id="emoji-picker-overlay">
+              <emoji-picker></emoji-picker>
+            </div>
           </form>
         </div>
       </div>

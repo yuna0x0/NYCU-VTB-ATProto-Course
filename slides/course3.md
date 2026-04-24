@@ -326,7 +326,7 @@ dragPos:
 
 # Lexicon #1：profile.json
 
-```json {all|4-5|6|10-12|13-16|17-19}
+```json {all|4-5|6|10-12|13|14-17|18-20}
 {
   "lexicon": 1,
   "id": "com.example.linkinbio.profile",
@@ -340,6 +340,8 @@ dragPos:
         "displayName": { "type": "string", "maxGraphemes": 64 },
         "description": { "type": "string", "maxGraphemes": 256 },
         "theme": { "type": "ref", "ref": "#theme" },
+        "linkOrder": { "type": "array",
+                       "items": { "type": "string", "format": "tid" } },
         "createdAt": { "type": "string", "format": "datetime" },
         "updatedAt": { "type": "string", "format": "datetime" }
       }
@@ -352,7 +354,7 @@ dragPos:
 ```
 
 <div v-click="6" class="mt-3 text-white/60 text-sm text-center">
-  <lucide:palette class="inline-block color-#f291a5 mr-1" /> <code>theme</code> 是 nested object — 讓每個人有自己的風格
+  <lucide:list-ordered class="inline-block color-#f291a5 mr-1" /> <code>linkOrder</code> 儲存 link record 的排序，更動排序時只需要 putRecord profile 一次
 </div>
 
 ---
@@ -363,7 +365,7 @@ dragPos:
 <div class="flex gap-6 mt-4">
 <div class="flex-1">
 
-```json {all|5|9-14}
+```json {all|5|9-13}
 {
   "lexicon": 1,
   "id": "com.example.linkinbio.link",
@@ -377,7 +379,6 @@ dragPos:
         "url":       { "type": "string", "format": "uri" },
         "title":     { "type": "string", "minLength": 1 },
         "emoji":     { "type": "string", "maxGraphemes": 1 },
-        "order":     { "type": "integer", "minimum": 0 },
         "createdAt": { "type": "string", "format": "datetime" }
       }
     }
@@ -403,7 +404,7 @@ dragPos:
 </div>
 
 <p v-click class="mt-6 text-white/60 text-sm">
-  <code>order</code> 欄位讓使用者能<br>自訂排序順序
+  排序交給 profile 的<br><code>linkOrder</code> 陣列管理
 </p>
 
 </div>
@@ -480,7 +481,7 @@ await rpc.post('com.atproto.repo.createRecord', {
     collection: 'com.example.linkinbio.link',
     record: {
       $type: 'com.example.linkinbio.link',
-      url, title, emoji, order,
+      url, title, emoji,
       createdAt: new Date().toISOString(),
     },
   },
@@ -674,13 +675,13 @@ const resolver = new LocalActorResolver({
   didDocumentResolver: new CompositeDidDocumentResolver({ /* plc + web */ }),
 });
 
-// #/view/yuna.bsky.social 路由觸發：
-const { did, handle, pds } = await resolver.resolve('yuna.bsky.social');
+// #/view/bsky.app 路由觸發：
+const { did, handle, pds } = await resolver.resolve('bsky.app');
 // { did: 'did:plc:...',
-//   handle: 'yuna.bsky.social',
+//   handle: 'bsky.app',
 //   pds: 'https://puffball.us-east.host.bsky.network' }
 
-// 匿名 XRPC client，直接打對方的 PDS
+// 建立無登入的 XRPC client，並輸入對方的 PDS
 import { Client, simpleFetchHandler } from '@atcute/client';
 const publicRpc = new Client({ handler: simpleFetchHandler({ service: pds }) });
 const links = await publicRpc.get('com.atproto.repo.listRecords', {...});
@@ -716,14 +717,15 @@ const links = await publicRpc.get('com.atproto.repo.listRecords', {...});
     <code class="color-#f291a5 font-bold">@atcute/lex-cli</code>
     <p class="text-white/60 mt-1">從 JSON lexicon 生成 TypeScript 型別</p>
   </div>
-  <div v-click="6" class="border border-white/20 rounded-lg p-3">
+  <div v-click="[6, 7]" class="border border-white/20 rounded-lg p-3">
     <code class="color-#f291a5 font-bold">@atcute/lexicons</code>
     <p class="text-white/60 mt-1">基礎型別（<code>Did</code>、<code>Handle</code>）</p>
   </div>
 </div>
 
+<br>
 <p v-click="7" class="mt-5 text-center text-base text-white/60">
-  同一套 SDK 從 Workshop 3 一路用到今天，你已經很熟了！
+  同一套 SDK 從 Workshop 3 一路用到今天，你應該已經很熟了對..對吧 (￣ω￣)
 </p>
 
 ---
@@ -782,7 +784,7 @@ pnpm dev
 ---
 ---
 
-# 程式碼地圖
+# 程式碼架構
 
 <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
   <div class="border border-white/20 rounded-lg p-3">
@@ -880,7 +882,7 @@ pnpm dev
   <div v-click="[3, 4]" class="border border-white/20 rounded-xl p-5">
     <lucide:move class="text-2xl color-#f291a5 mb-2" />
     <p class="font-bold text-lg mb-1">拖拉排序</p>
-    <p class="text-white/60 text-sm">重新排列連結 → 更新每筆 record 的 <code>order</code> 欄位</p>
+    <p class="text-white/60 text-sm">在編輯器用滑鼠拖拉排序（現在是上下箭頭按鈕）</p>
   </div>
   <div v-click="[4, 5]" class="border border-white/20 rounded-xl p-5">
     <lucide:server class="text-2xl color-#f291a5 mb-2" />

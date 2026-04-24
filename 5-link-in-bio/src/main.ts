@@ -2,12 +2,14 @@ import { Client } from '@atcute/client';
 import type {} from '@atcute/bluesky';
 import type { Did } from '@atcute/lexicons';
 import type { ActorIdentifier } from '@atcute/lexicons/syntax';
+import 'emoji-picker-element';
 
 import { login, handleCallback, resumeSession, logout, type OAuthUserAgent } from './lib/oauth.js';
 import { resolveActor, publicClient, appviewClient } from './lib/public.js';
 import {
   getProfile,
   putProfile,
+  setLinkOrder,
   listLinks,
   addLink,
   deleteLink,
@@ -78,6 +80,7 @@ async function initEditor(agent: OAuthUserAgent) {
   wireThemeControls();
   wireSaveProfile();
   wireAddLink();
+  wireEmojiPicker();
 
   // Load Bluesky profile (avatar + handle) from the anonymous public appview.
   // Runs in the background; failures are logged but never block the editor.
@@ -105,7 +108,7 @@ async function initEditor(agent: OAuthUserAgent) {
   }
 }
 
-async function loadBskyProfile(actor: string): Promise<void> {
+async function loadBskyProfile(actor: Did): Promise<void> {
   const result = await appviewClient.get('app.bsky.actor.getProfile', {
     params: { actor: actor as ActorIdentifier },
   });
@@ -218,25 +221,28 @@ function wireAddLink() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const emojiInput = document.getElementById('add-link-emoji') as HTMLInputElement;
+    const emojiBtn = document.getElementById('add-link-emoji-btn') as HTMLButtonElement;
     const titleInput = document.getElementById('add-link-title') as HTMLInputElement;
     const urlInput = document.getElementById('add-link-url') as HTMLInputElement;
     const url = urlInput.value.trim();
     const title = titleInput.value.trim();
     if (!url || !title) return;
 
-    const submitBtn = form.querySelector('button') as HTMLButtonElement;
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
     submitBtn.disabled = true;
     setStatus('Adding link…', false, false);
     try {
       const currentLinks = await listLinks(rpc, userDid);
-      const nextOrder = currentLinks.length;
-      await addLink(rpc, userDid, {
+      const newRkey = await addLink(rpc, userDid, {
         url,
         title,
         emoji: emojiInput.value.trim() || undefined,
-        order: nextOrder,
       });
+      // Append new rkey to the profile's linkOrder so the page shows it
+      // at the bottom. One putRecord on the singleton profile.
+      await setLinkOrder(rpc, userDid, [...currentLinks.map((l) => l.rkey), newRkey]);
       emojiInput.value = '';
+      emojiBtn.textContent = '🔗';
       titleInput.value = '';
       urlInput.value = '';
       await renderLinks();
@@ -256,7 +262,16 @@ async function renderLinks() {
     container.innerHTML = '<p class="empty-state">No links yet — add your first one below!</p>';
     return;
   }
-  container.innerHTML = links.map((l) => renderLinkRow(l)).join('');
+  container.innerHTML = links.map((l, i) => renderLinkRow(l, i, links.length)).join('');
+
+  container.querySelectorAll<HTMLButtonElement>('.link-up, .link-down').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const rkey = btn.dataset.rkey!;
+      const direction = btn.classList.contains('link-up') ? -1 : 1;
+      await swapLinkOrder(links, rkey, direction);
+    });
+  });
+
   container.querySelectorAll<HTMLButtonElement>('.link-delete').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const rkey = btn.dataset.rkey!;
@@ -264,6 +279,8 @@ async function renderLinks() {
       setStatus('Deleting…', false, false);
       try {
         await deleteLink(rpc, userDid, rkey);
+        // Drop the rkey from the profile's linkOrder so it stops appearing.
+        await setLinkOrder(rpc, userDid, links.filter((l) => l.rkey !== rkey).map((l) => l.rkey));
         await renderLinks();
         setStatus('Link deleted');
       } catch (err) {
@@ -273,10 +290,34 @@ async function renderLinks() {
   });
 }
 
-function renderLinkRow(l: LinkRecord): string {
+// Swap a link's position with its neighbor (direction: -1 = up, +1 = down).
+// One putRecord on the profile — order is a single source of truth.
+async function swapLinkOrder(links: LinkRecord[], rkey: string, direction: -1 | 1) {
+  const i = links.findIndex((l) => l.rkey === rkey);
+  const j = i + direction;
+  if (i < 0 || j < 0 || j >= links.length) return;
+  const newOrder = links.map((l) => l.rkey);
+  [newOrder[i], newOrder[j]] = [newOrder[j]!, newOrder[i]!];
+  setStatus('Reordering…', false, false);
+  try {
+    await setLinkOrder(rpc, userDid, newOrder);
+    await renderLinks();
+    setStatus('Reordered');
+  } catch (err) {
+    setStatus(`Reorder failed: ${err instanceof Error ? err.message : err}`, true);
+  }
+}
+
+function renderLinkRow(l: LinkRecord, index: number, total: number): string {
   const pdsls = pdslsUrl(userDid, LINK_NSID, l.rkey);
+  const upDisabled = index === 0 ? 'disabled' : '';
+  const downDisabled = index === total - 1 ? 'disabled' : '';
   return `
     <div class="link-row">
+      <div class="link-reorder">
+        <button class="icon-btn link-up" data-rkey="${escapeHtml(l.rkey)}" ${upDisabled} title="Move up">▲</button>
+        <button class="icon-btn link-down" data-rkey="${escapeHtml(l.rkey)}" ${downDisabled} title="Move down">▼</button>
+      </div>
       <div class="link-emoji">${escapeHtml(l.emoji || '🔗')}</div>
       <div class="link-info">
         <div class="link-title">${escapeHtml(l.title)}</div>
@@ -288,6 +329,34 @@ function renderLinkRow(l: LinkRecord): string {
       </div>
     </div>
   `;
+}
+
+// ----- Emoji picker (add-link form) -----
+
+function wireEmojiPicker() {
+  const btn = document.getElementById('add-link-emoji-btn') as HTMLButtonElement;
+  const hidden = document.getElementById('add-link-emoji') as HTMLInputElement;
+  const overlay = document.getElementById('emoji-picker-overlay') as HTMLDivElement;
+  const picker = overlay.querySelector('emoji-picker')!;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+  });
+
+  picker.addEventListener('emoji-click', (e: Event) => {
+    const emoji = (e as CustomEvent<{ unicode: string }>).detail.unicode;
+    hidden.value = emoji;
+    btn.textContent = emoji;
+    overlay.style.display = 'none';
+  });
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element;
+    if (!target.closest('#emoji-picker-overlay, #add-link-emoji-btn')) {
+      overlay.style.display = 'none';
+    }
+  });
 }
 
 // =====================================================

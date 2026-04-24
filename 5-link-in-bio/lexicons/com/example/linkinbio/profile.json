@@ -27,6 +27,12 @@
             "ref": "#theme",
             "description": "Personalized color + mode for this profile."
           },
+          "linkOrder": {
+            "type": "array",
+            "maxLength": 200,
+            "items": { "type": "string", "format": "tid" },
+            "description": "Ordered list of link record rkeys (tids) that defines the display order on the public page."
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",

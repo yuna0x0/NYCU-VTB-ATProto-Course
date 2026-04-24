@@ -93,7 +93,7 @@ repo:com.example.linkinbio.link?action=create&action=update&action=delete
 ## 延伸想法
 
 - **Theme gallery** — 加入預設主題（配色 + 字型）
-- **拖拉排序** — 改變 `order` 欄位
+- **拖拉排序** — 重新排列 `profile.linkOrder` 陣列，一次 `putRecord` 就搞定
 - **自訂背景圖** — 上傳 blob 作為背景（需加 `blob:image/*` scope）
 - **SSR 公開頁** — 用後端 SSR 渲染 `/{handle}` 頁面，分享連結到 Bluesky / X 時會顯示縮圖卡片（類似 linkat.blue）
 
