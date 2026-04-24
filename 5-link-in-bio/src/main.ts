@@ -4,7 +4,14 @@ import type { Did } from '@atcute/lexicons';
 import type { ActorIdentifier } from '@atcute/lexicons/syntax';
 import 'emoji-picker-element';
 
-import { login, handleCallback, resumeSession, logout, type OAuthUserAgent } from './lib/oauth.js';
+import {
+  login,
+  handleCallback,
+  resumeSession,
+  logout,
+  clearStoredSessions,
+  type OAuthUserAgent,
+} from './lib/oauth.js';
 import { resolveActor, publicClient, appviewClient } from './lib/public.js';
 import {
   getProfile,
@@ -30,6 +37,9 @@ const statusEl = document.getElementById('status') as HTMLDivElement;
 // ---- Status helper ----
 let statusTimer: number | undefined;
 function setStatus(msg: string, isError = false, autoHide = true) {
+  // Don't clobber the "session expired" message that forceLogout posts
+  // while the reload is pending (1.5s window).
+  if (loggingOut) return;
   statusEl.textContent = msg;
   statusEl.className = isError ? 'visible error' : 'visible';
   window.clearTimeout(statusTimer);
@@ -44,6 +54,40 @@ function escapeHtml(text: string): string {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+// Recognise errors that mean "this OAuth session is no longer valid":
+// expired / revoked access or refresh token, invalid DPoP proof, 401, etc.
+// Matches atcute's thrown errors, XRPC `{ok:false, data:{error}}` payloads
+// that bubble up via our own throws, plain error objects, and strings.
+// Intentionally permissive: a false positive just sends the user through
+// OAuth again, which is far better than leaving them stuck with a dead
+// session they can't tell is dead.
+function isAuthError(err: unknown): boolean {
+  if (!err) return false;
+  let msg: string;
+  if (err instanceof Error) msg = err.message;
+  else if (typeof err === 'string') msg = err;
+  else if (typeof err === 'object') {
+    try { msg = JSON.stringify(err); } catch { msg = String(err); }
+  } else msg = String(err);
+  return /401|403|unauthori|authentic|token|dpop|expired|revoked|refresh|invalid[_ -]?grant/i.test(msg);
+}
+
+// Drop the stored session from IndexedDB and bounce back to the login page
+// with an explanation. Used whenever we detect an auth error on any XRPC
+// call, since the session is unusable and keeping the user in the editor
+// is worse than sending them through OAuth again.
+let loggingOut = false;
+function forceLogout(reason = 'Your session has expired. Please log in again.'): void {
+  if (loggingOut) return;
+  loggingOut = true;
+  clearStoredSessions();
+  // Write the toast directly: setStatus suppresses writes once loggingOut
+  // is set, and we need this final message to stick until the reload.
+  statusEl.textContent = reason;
+  statusEl.className = 'visible error';
+  setTimeout(() => window.location.reload(), 1500);
 }
 
 // ---- Theme application ----
@@ -69,32 +113,33 @@ async function initEditor(agent: OAuthUserAgent) {
   rpc = new Client({ handler: agent });
   userDid = agent.sub as Did;
 
-  // Show editor IMMEDIATELY. Even if any of the downstream data calls fail,
-  // the user should never be stuck looking at the login form after auth.
+  // Show the editor immediately. The session was server-verified upstream:
+  // resumeSession() calls com.atproto.server.getSession before returning
+  // 'ok', and the OAuth-callback path has just finalized fresh tokens.
   loginSection.style.display = 'none';
   viewSection.style.display = 'none';
   editorSection.style.display = 'flex';
 
-  // Wire interactive controls up front so they work even before data loads.
   document.getElementById('logout-btn')!.addEventListener('click', () => logout(agent));
   wireThemeControls();
   wireSaveProfile();
   wireAddLink();
   wireEmojiPicker();
 
-  // Load Bluesky profile (avatar + handle) from the anonymous public appview.
-  // Runs in the background; failures are logged but never block the editor.
+  // Fill header avatar + handle from the anonymous public appview.
   loadBskyProfile(agent.sub).catch((err) => console.error('bsky profile load:', err));
 
-  // Load our custom profile record (singleton at rkey "self").
+  // Load profile record (singleton). Auth errors here bounce to login;
+  // non-auth errors let the user proceed with an empty form.
+  let profile: Profile | null = null;
   try {
-    const profile = await getProfile(rpc, userDid);
-    if (profile?.theme) currentTheme = profile.theme;
-    populateProfileForm(profile);
+    profile = await getProfile(rpc, userDid);
   } catch (err) {
     console.error('linkinbio profile load:', err);
-    populateProfileForm(null);
+    if (isAuthError(err)) { forceLogout(); return; }
   }
+  if (profile?.theme) currentTheme = profile.theme;
+  populateProfileForm(profile);
   applyTheme(currentTheme);
   updateProfilePdsls();
 
@@ -103,9 +148,40 @@ async function initEditor(agent: OAuthUserAgent) {
     await renderLinks();
   } catch (err) {
     console.error('linkinbio links load:', err);
+    if (isAuthError(err)) { forceLogout(); return; }
     document.getElementById('links-list')!.innerHTML =
-      '<p class="empty-state">Failed to load links — check the console.</p>';
+      '<p class="empty-state">Failed to load links. Check the console.</p>';
   }
+
+  // Detect sessions that die while the tab is already open (revoked from
+  // another device, long-idle, etc.) without waiting for a user action.
+  startSessionHealthCheck();
+}
+
+// Periodic "is my session still alive?" probe. Fires on tab focus and every
+// 5 minutes while the editor is visible. A single getProfile call is enough:
+// atcute auto-refreshes the access token, so this only fails when the
+// refresh token itself has expired/been revoked.
+let healthCheckInterval: number | undefined;
+let healthCheckRunning = false;
+async function runSessionHealthCheck() {
+  if (healthCheckRunning || loggingOut) return;
+  if (!rpc || !userDid) return;
+  healthCheckRunning = true;
+  try {
+    await getProfile(rpc, userDid);
+  } catch (err) {
+    if (isAuthError(err)) forceLogout();
+  } finally {
+    healthCheckRunning = false;
+  }
+}
+function startSessionHealthCheck() {
+  if (healthCheckInterval !== undefined) return;
+  healthCheckInterval = window.setInterval(runSessionHealthCheck, 5 * 60 * 1000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') runSessionHealthCheck();
+  });
 }
 
 async function loadBskyProfile(actor: Did): Promise<void> {
@@ -203,6 +279,7 @@ function wireSaveProfile() {
       setStatus('Profile saved');
       updateProfilePdsls();
     } catch (err) {
+      if (isAuthError(err)) { forceLogout(); return; }
       setStatus(`Save failed: ${err instanceof Error ? err.message : err}`, true);
     } finally {
       btn.disabled = false;
@@ -248,6 +325,7 @@ function wireAddLink() {
       await renderLinks();
       setStatus('Link added');
     } catch (err) {
+      if (isAuthError(err)) { forceLogout(); return; }
       setStatus(`Add failed: ${err instanceof Error ? err.message : err}`, true);
     } finally {
       submitBtn.disabled = false;
@@ -259,7 +337,7 @@ async function renderLinks() {
   const container = document.getElementById('links-list')!;
   const links = await listLinks(rpc, userDid);
   if (links.length === 0) {
-    container.innerHTML = '<p class="empty-state">No links yet — add your first one below!</p>';
+    container.innerHTML = '<p class="empty-state">No links yet. Add your first one below!</p>';
     return;
   }
   container.innerHTML = links.map((l, i) => renderLinkRow(l, i, links.length)).join('');
@@ -284,6 +362,7 @@ async function renderLinks() {
         await renderLinks();
         setStatus('Link deleted');
       } catch (err) {
+        if (isAuthError(err)) { forceLogout(); return; }
         setStatus(`Delete failed: ${err instanceof Error ? err.message : err}`, true);
       }
     });
@@ -291,7 +370,7 @@ async function renderLinks() {
 }
 
 // Swap a link's position with its neighbor (direction: -1 = up, +1 = down).
-// One putRecord on the profile — order is a single source of truth.
+// One putRecord on the profile, since order is a single source of truth.
 async function swapLinkOrder(links: LinkRecord[], rkey: string, direction: -1 | 1) {
   const i = links.findIndex((l) => l.rkey === rkey);
   const j = i + direction;
@@ -304,6 +383,7 @@ async function swapLinkOrder(links: LinkRecord[], rkey: string, direction: -1 | 
     await renderLinks();
     setStatus('Reordered');
   } catch (err) {
+    if (isAuthError(err)) { forceLogout(); return; }
     setStatus(`Reorder failed: ${err instanceof Error ? err.message : err}`, true);
   }
 }
@@ -490,7 +570,7 @@ async function runTypeahead(q: string) {
     typeaheadActive = -1;
     renderTypeahead();
   } catch {
-    // aborted or network error — ignore silently
+    // aborted or network error, ignore silently
   }
 }
 
@@ -571,22 +651,29 @@ async function init() {
       setStatus('');
     } catch (err) {
       console.error('OAuth callback failed:', err);
+      clearStoredSessions();
+      window.history.replaceState({}, '', '/');
       setStatus(`Login failed: ${err instanceof Error ? err.message : err}`, true);
       showLogin();
     }
     return;
   }
 
-  const existing = await resumeSession();
-  if (existing) {
+  const resume = await resumeSession();
+  if (resume.status === 'ok') {
     setStatus('Resuming session…', false, false);
     try {
-      await initEditor(existing);
+      await initEditor(resume.agent);
       setStatus('');
       return;
     } catch (err) {
       console.warn('Session resume failed:', err);
+      if (isAuthError(err)) clearStoredSessions();
     }
+  } else if (resume.status === 'expired') {
+    // resumeSession already cleared the dead session from IndexedDB;
+    // tell the user why they're back at the login page.
+    setStatus('Your session has expired. Please log in again.', true, false);
   }
 
   showLogin();

@@ -457,7 +457,7 @@ dragPos:
 
 ````md magic-move
 ```typescript
-// putRecord — profile (singleton, rkey: "self")
+// putRecord: profile (singleton, rkey: "self")
 await rpc.post('com.atproto.repo.putRecord', {
   input: {
     repo: did,
@@ -474,7 +474,7 @@ await rpc.post('com.atproto.repo.putRecord', {
 ```
 
 ```typescript
-// createRecord — link (server 產生 tid rkey)
+// createRecord: link (server 產生 tid rkey)
 await rpc.post('com.atproto.repo.createRecord', {
   input: {
     repo: did,
@@ -504,7 +504,7 @@ await rpc.post('com.atproto.repo.createRecord', {
 
 ````md magic-move
 ```typescript
-// listRecords — 讀出 collection 的所有 record
+// listRecords: 讀出 collection 的所有 record
 const result = await rpc.get('com.atproto.repo.listRecords', {
   params: {
     repo: did,
@@ -520,7 +520,7 @@ if (result.ok) {
 ```
 
 ```typescript
-// deleteRecord — 用 rkey 指定要刪的 record
+// deleteRecord: 用 rkey 指定要刪的 record
 await rpc.post('com.atproto.repo.deleteRecord', {
   input: {
     repo: did,
@@ -555,19 +555,19 @@ await rpc.post('com.atproto.repo.deleteRecord', {
     <code class="color-#f291a5 font-bold shrink-0">repo:linkinbio.profile?action=...</code>
     <span class="text-white/80">只能寫入 <b>profile</b> 這個 collection</span>
   </div>
-  <div v-click="3" class="border border-white/20 rounded-lg px-4 py-3 flex items-start gap-4">
+  <div v-click="[3, 4]" class="border border-white/20 rounded-lg px-4 py-3 flex items-start gap-4">
     <code class="color-#f291a5 font-bold shrink-0">repo:linkinbio.link?action=...</code>
     <span class="text-white/80">只能寫入 <b>link</b> 這個 collection</span>
   </div>
 </div>
 
-<div v-click="4" class="mt-6 border-l-2 border-lime pl-4 text-sm text-white/70">
+<div v-click="[4, 5]" class="mt-6 border-l-2 border-lime pl-4 text-sm text-white/70">
   <lucide:check class="inline-block color-lime mr-1" /> 顯示使用者頭像需要 <code>app.bsky.actor.profile</code> 資料，我們透過公開的 <code>public.api.bsky.app</code> AppView 讀取，不需要額外授權或驗證。
 </div>
 
 <div v-click="5" class="mt-3 border-l-2 border-red pl-4 text-sm text-white/60">
-  對照 <code>transition:generic</code> — 那會授權寫入 repo <b class="color-red">所有</b> collection。<br>
-  我們只申請真正需要的東西。<a href="https://atproto.com/specs/permission" target="_blank">atproto.com/specs/permission</a>
+  對照 <code>transition:generic</code> 會授權寫入 repo <b class="color-red">所有的</b> collection。<br>
+  我們只請求真正需要的東西。<a href="https://atproto.com/specs/permission" target="_blank">atproto.com/specs/permission</a>
 </div>
 
 </div>
@@ -625,7 +625,7 @@ await rpc.post('com.atproto.repo.deleteRecord', {
 
 ````md magic-move
 ```ts
-// Naive attempt — atproto OAuth rejects real http://localhost as origin
+// Naive attempt: atproto OAuth rejects real http://localhost as origin
 configureOAuth({
   metadata: {
     client_id: 'http://localhost:5175/client-metadata.json',
@@ -635,7 +635,7 @@ configureOAuth({
 ```
 
 ```ts
-// Loopback form — "localhost" inside client_id is a magic keyword,
+// Loopback form: "localhost" inside client_id is a magic keyword,
 // PDS synthesizes virtual metadata from the query string (no hosted JSON)
 const DEV_REDIRECT = 'http://127.0.0.1:5175/callback';
 const DEV_CLIENT_ID =
@@ -654,7 +654,7 @@ configureOAuth({
 
 <div v-click class="mt-4 border-l-2 border-orange pl-4 text-sm text-white/70">
   <lucide:alert-triangle class="inline-block color-orange mr-1" /> 瀏覽器一定要開 <code>http://127.0.0.1:5175</code>，不是 <code>localhost</code>！<br>
-  <span class="text-xs text-white/50">client_id 裡那個 "localhost" 是 PDS 辨識的 magic keyword，不是你要連的 hostname</span>
+  <span class="text-xs text-white/50">client_id 裡那個 "localhost" 是 PDS 辨識的關鍵字，不是你要連的 hostname</span>
 </div>
 
 ---
@@ -688,7 +688,7 @@ const links = await publicRpc.get('com.atproto.repo.listRecords', {...});
 ```
 
 <div v-click class="mt-3 text-center text-base text-white/70">
-  <span class="color-lime font-bold">不需要登入</span>就能看別人的 Link in Bio，因為 atproto 本來就是公開的
+  <span class="color-lime font-bold">不需要登入</span>就能看別人的 Link in Bio
 </div>
 
 ---
@@ -793,7 +793,7 @@ pnpm dev
   </div>
   <div class="border border-white/20 rounded-lg p-3">
     <code class="color-#f291a5">src/lib/oauth.ts</code>
-    <p class="text-white/60 mt-1">OAuth + SCOPE 常數 + <code>login/handleCallback/resumeSession/logout</code></p>
+    <p class="text-white/60 mt-1">OAuth + Scope 常數 + <code>login/handleCallback/resumeSession/logout</code></p>
   </div>
   <div class="border border-white/20 rounded-lg p-3">
     <code class="color-#f291a5">src/lib/public.ts</code>
@@ -814,7 +814,7 @@ pnpm dev
 </div>
 
 <p class="mt-4 text-center text-base text-white/60">
-  全部加起來 &lt; 700 行 TypeScript，atcute 幫我們處理了 90% 的苦工
+  主要都透過 atcute 來實作和 AT Protocol 互動的邏輯！
 </p>
 
 ---
@@ -857,7 +857,7 @@ pnpm dev
 </div>
 
 <p class="mt-3 text-white/50 text-sm">
-  App 內每筆 record 都有「View on PDSls」按鈕 —<br>直接點就會開啟
+  App 內每筆 record 都有「View on PDSls」按鈕，<br>直接點就會開啟
 </p>
 
 </div>

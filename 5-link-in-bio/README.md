@@ -1,6 +1,6 @@
 # Workshop 5：Link in Bio
 
-使用 atcute + OAuth + 自訂 Lexicon 打造完全建立在 AT Protocol 之上的 Link in Bio 應用程式 — 資料存在你自己的 PDS，網路上的使用者則可以查看。
+使用 atcute + OAuth + 自訂 Lexicon 打造完全建立在 AT Protocol 之上的 Link in Bio 應用程式。資料存在你自己的 PDS，網路上的使用者則可以查看。
 
 ## 功能
 
@@ -77,7 +77,7 @@ repo:com.example.linkinbio.link?action=create&action=update&action=delete
    pnpm build                 # 產出 dist/
    npx wrangler pages deploy dist
    ```
-4. Cloudflare Pages 預設是 static site，callback route (`/callback`) 需要 SPA fallback — 在 `public/_redirects` 加上：
+4. Cloudflare Pages 預設是 static site，callback route (`/callback`) 需要 SPA fallback，在 `public/_redirects` 加上：
    ```
    /*  /index.html  200
    ```

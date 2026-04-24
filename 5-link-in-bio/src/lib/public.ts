@@ -11,7 +11,7 @@ export async function resolveActor(actor: string) {
 }
 
 // Build an unauthenticated XRPC client pointed at a specific PDS.
-// Used by the public viewer — no OAuth required for public reads.
+// Used by the public viewer: no OAuth required for public reads.
 export function publicClient(pdsUrl: string | URL): Client {
   return new Client({ handler: simpleFetchHandler({ service: pdsUrl }) });
 }

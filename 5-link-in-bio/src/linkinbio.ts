@@ -1,43 +1,50 @@
-import type { Client } from '@atcute/client';
-import type { Did } from '@atcute/lexicons';
-import type {} from '@atcute/atproto';
+import type { Client } from "@atcute/client";
+import type { Did } from "@atcute/lexicons";
+import type {} from "@atcute/atproto";
 
-// NSIDs for our custom Lexicons.
-export const PROFILE_NSID = 'com.example.linkinbio.profile';
-export const LINK_NSID = 'com.example.linkinbio.link';
+// Types come from `pnpm lex:generate` (src/lexicons/types/…). Importing them
+// here means our TypeScript types stay in lockstep with the lexicon JSON:
+// add a field to profile.json, re-run lex:generate, and the compiler tells
+// us everywhere we need to handle it.
+import * as LinkinbioLink from "./lexicons/types/com/example/linkinbio/link.js";
+import * as LinkinbioProfile from "./lexicons/types/com/example/linkinbio/profile.js";
 
-// Shape of our records (mirrors lexicons/com/example/linkinbio/*.json).
-export interface Theme {
-  accent?: string;
-  mode?: 'dark' | 'light';
-}
-export interface Profile {
-  displayName?: string;
-  description?: string;
-  theme?: Theme;
-  // Ordered list of link rkeys that defines display order on the page.
-  // Order lives in the profile so reordering is one atomic putRecord.
-  linkOrder?: string[];
-  createdAt: string;
-  updatedAt?: string;
-}
-export interface LinkRecord {
+// NSIDs derived from the generated schemas at runtime. No hardcoded string
+// duplication: the only place our collection names live is in the lexicon
+// JSON files, and `pnpm lex:generate` wires them through to TypeScript.
+export const PROFILE_NSID =
+  LinkinbioProfile.mainSchema.object.shape.$type.expected;
+export const LINK_NSID = LinkinbioLink.mainSchema.object.shape.$type.expected;
+
+// Profile + Theme come straight from the generated schema. The raw record
+// shape includes `$type`; we use `Profile` (without $type) at the app layer
+// and re-add $type when writing to the PDS.
+export type Theme = LinkinbioProfile.Theme;
+export type Profile = Omit<LinkinbioProfile.Main, "$type">;
+
+// A link as it comes out of listRecords: the lexicon record shape plus the
+// repo metadata (uri + rkey) that the PDS returns alongside.
+export interface LinkRecord extends Omit<LinkinbioLink.Main, "$type"> {
   uri: string;
   rkey: string;
-  url: string;
-  title: string;
-  emoji?: string;
-  createdAt: string;
 }
 
 // Load the user's profile (singleton record at rkey "self").
-// Returns null if the record does not yet exist.
-export async function getProfile(rpc: Client, did: Did): Promise<Profile | null> {
-  const result = await rpc.get('com.atproto.repo.getRecord', {
-    params: { repo: did, collection: PROFILE_NSID, rkey: 'self' },
+// Returns null only when the record genuinely doesn't exist yet.
+// Throws on any other error (network, auth, etc.) so callers can react.
+export async function getProfile(
+  rpc: Client,
+  did: Did,
+): Promise<Profile | null> {
+  const result = await rpc.get("com.atproto.repo.getRecord", {
+    params: { repo: did, collection: PROFILE_NSID, rkey: "self" },
   });
-  if (!result.ok) return null;
-  return result.data.value as unknown as Profile;
+  if (result.ok) return result.data.value as unknown as Profile;
+  const err = (result.data as { error?: string } | undefined)?.error ?? "";
+  // PDSes return "RecordNotFound" for missing records. Anything else (auth
+  // failure, 5xx, etc.) is a real error and we rethrow so the UI can decide.
+  if (/NotFound|not[\s_]?found/i.test(err)) return null;
+  throw new Error(`getProfile failed: ${JSON.stringify(result.data)}`);
 }
 
 // Save the profile form (displayName, description, theme). Preserves any
@@ -58,13 +65,14 @@ export async function putProfile(
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
-  const result = await rpc.post('com.atproto.repo.putRecord', {
-    input: { repo: did, collection: PROFILE_NSID, rkey: 'self', record },
+  const result = await rpc.post("com.atproto.repo.putRecord", {
+    input: { repo: did, collection: PROFILE_NSID, rkey: "self", record },
   });
-  if (!result.ok) throw new Error(`putProfile failed: ${JSON.stringify(result.data)}`);
+  if (!result.ok)
+    throw new Error(`putProfile failed: ${JSON.stringify(result.data)}`);
 }
 
-// Update just the `linkOrder` on the profile — used by add / delete /
+// Update just the `linkOrder` on the profile. Used by add / delete /
 // reorder. Preserves all other profile fields.
 export async function setLinkOrder(
   rpc: Client,
@@ -82,10 +90,11 @@ export async function setLinkOrder(
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
-  const result = await rpc.post('com.atproto.repo.putRecord', {
-    input: { repo: did, collection: PROFILE_NSID, rkey: 'self', record },
+  const result = await rpc.post("com.atproto.repo.putRecord", {
+    input: { repo: did, collection: PROFILE_NSID, rkey: "self", record },
   });
-  if (!result.ok) throw new Error(`setLinkOrder failed: ${JSON.stringify(result.data)}`);
+  if (!result.ok)
+    throw new Error(`setLinkOrder failed: ${JSON.stringify(result.data)}`);
 }
 
 // List all link records in the user's repo, sorted by the profile's
@@ -94,17 +103,17 @@ export async function setLinkOrder(
 export async function listLinks(rpc: Client, did: Did): Promise<LinkRecord[]> {
   const [profile, listResult] = await Promise.all([
     getProfile(rpc, did),
-    rpc.get('com.atproto.repo.listRecords', {
+    rpc.get("com.atproto.repo.listRecords", {
       params: { repo: did, collection: LINK_NSID, limit: 100 },
     }),
   ]);
   if (!listResult.ok) return [];
 
-  const records: LinkRecord[] = (listResult.data.records as Array<{ uri: string; value: unknown }>).map((r) => {
-    const v = r.value as { url: string; title: string; emoji?: string; createdAt: string };
+  const records: LinkRecord[] = listResult.data.records.map((r) => {
+    const v = r.value as LinkinbioLink.Main;
     return {
       uri: r.uri,
-      rkey: r.uri.split('/').pop()!,
+      rkey: r.uri.split("/").pop()!,
       url: v.url,
       title: v.title,
       emoji: v.emoji,
@@ -117,11 +126,16 @@ export async function listLinks(rpc: Client, did: Did): Promise<LinkRecord[]> {
   const ordered: LinkRecord[] = [];
   for (const rkey of order) {
     const r = byRkey.get(rkey);
-    if (r) { ordered.push(r); byRkey.delete(rkey); }
+    if (r) {
+      ordered.push(r);
+      byRkey.delete(rkey);
+    }
   }
   // Records not yet in linkOrder (e.g. created directly, pre-migration)
   // are appended in chronological order so they stay visible.
-  const rest = [...byRkey.values()].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  const rest = [...byRkey.values()].sort((a, b) =>
+    a.createdAt.localeCompare(b.createdAt),
+  );
   return [...ordered, ...rest];
 }
 
@@ -139,19 +153,25 @@ export async function addLink(
     emoji: data.emoji,
     createdAt: new Date().toISOString(),
   };
-  const result = await rpc.post('com.atproto.repo.createRecord', {
+  const result = await rpc.post("com.atproto.repo.createRecord", {
     input: { repo: did, collection: LINK_NSID, record },
   });
-  if (!result.ok) throw new Error(`addLink failed: ${JSON.stringify(result.data)}`);
-  return result.data.uri.split('/').pop()!;
+  if (!result.ok)
+    throw new Error(`addLink failed: ${JSON.stringify(result.data)}`);
+  return result.data.uri.split("/").pop()!;
 }
 
 // Delete a link record by rkey.
-export async function deleteLink(rpc: Client, did: Did, rkey: string): Promise<void> {
-  const result = await rpc.post('com.atproto.repo.deleteRecord', {
+export async function deleteLink(
+  rpc: Client,
+  did: Did,
+  rkey: string,
+): Promise<void> {
+  const result = await rpc.post("com.atproto.repo.deleteRecord", {
     input: { repo: did, collection: LINK_NSID, rkey },
   });
-  if (!result.ok) throw new Error(`deleteLink failed: ${JSON.stringify(result.data)}`);
+  if (!result.ok)
+    throw new Error(`deleteLink failed: ${JSON.stringify(result.data)}`);
 }
 
 // Build a PDSls URL that points at a specific record in the user's repo.
