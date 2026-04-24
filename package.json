@@ -11,6 +11,9 @@
     "slides:dev:2": "pnpm --filter slides dev:2",
     "slides:build:2": "pnpm --filter slides build:2",
     "slides:export:2": "pnpm --filter slides export:2",
+    "slides:dev:3": "pnpm --filter slides dev:3",
+    "slides:build:3": "pnpm --filter slides build:3",
+    "slides:export:3": "pnpm --filter slides export:3",
     "agent:dev": "pnpm --filter 1-agent dev",
     "agent:start": "pnpm --filter 1-agent start",
     "feed:dev": "pnpm --filter 2-custom-feed dev",
@@ -19,7 +22,10 @@
     "oauth:dev": "pnpm --filter 3-oauth dev",
     "oauth:build": "pnpm --filter 3-oauth build",
     "social:dev": "pnpm --filter 4-social-app dev",
-    "social:build": "pnpm --filter 4-social-app build"
+    "social:build": "pnpm --filter 4-social-app build",
+    "linkinbio:dev": "pnpm --filter 5-link-in-bio dev",
+    "linkinbio:build": "pnpm --filter 5-link-in-bio build",
+    "linkinbio:lex": "pnpm --filter 5-link-in-bio lex:generate"
   },
   "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
 }

@@ -10,7 +10,10 @@
     "export:1": "slidev export course1.md",
     "dev:2": "slidev course2.md --open",
     "build:2": "slidev build course2.md --base /course2/ --out dist/course2",
-    "export:2": "slidev export course2.md"
+    "export:2": "slidev export course2.md",
+    "dev:3": "slidev course3.md --open",
+    "build:3": "slidev build course3.md --base /course3/ --out dist/course3",
+    "export:3": "slidev export course3.md"
   },
   "dependencies": {
     "@slidev/cli": "^52.14.1",

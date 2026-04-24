@@ -1,0 +1,12 @@
+{
+  "client_id": "https://your-app.example.com/oauth-client-metadata.json",
+  "client_name": "Link in Bio",
+  "client_uri": "https://your-app.example.com",
+  "redirect_uris": ["https://your-app.example.com/callback"],
+  "scope": "atproto repo:com.example.linkinbio.profile?action=create&action=update&action=delete repo:com.example.linkinbio.link?action=create&action=update&action=delete",
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"],
+  "application_type": "web",
+  "token_endpoint_auth_method": "none",
+  "dpop_bound_access_tokens": true
+}

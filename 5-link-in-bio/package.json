@@ -1,0 +1,24 @@
+{
+  "name": "5-link-in-bio",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5175",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5175",
+    "lex": "lex-cli",
+    "lex:generate": "lex-cli generate"
+  },
+  "dependencies": {
+    "@atcute/atproto": "^3.1.10",
+    "@atcute/bluesky": "^3.3.0",
+    "@atcute/client": "^4.2.1",
+    "@atcute/identity-resolver": "^1.2.2",
+    "@atcute/oauth-browser-client": "^3.0.0"
+  },
+  "devDependencies": {
+    "@atcute/lex-cli": "^2.5.3",
+    "@atcute/lexicons": "^1.2.9",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.1"
+  }
+}

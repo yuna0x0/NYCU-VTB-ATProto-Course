@@ -1,0 +1,46 @@
+{
+  "lexicon": 1,
+  "id": "com.example.linkinbio.link",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A single link on a user's Link-in-Bio page.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["url", "title", "createdAt"],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048,
+            "description": "Destination URL for this link."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxGraphemes": 64,
+            "maxLength": 640,
+            "description": "Display title for the link button."
+          },
+          "emoji": {
+            "type": "string",
+            "maxGraphemes": 1,
+            "maxLength": 8,
+            "description": "Optional emoji rendered next to the title."
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Sort position (lower values render first)."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when the link was created."
+          }
+        }
+      }
+    }
+  }
+}

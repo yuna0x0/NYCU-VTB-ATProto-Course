@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Link in Bio — AT Protocol</title>
+    <style>
+      :root {
+        --accent: #f291a5;
+        --accent-ink: #1a1a2e;
+        --bg: #1a1a2e;
+        --surface: #16213e;
+        --surface-alt: #0f3460;
+        --fg: #e0e0e0;
+        --muted: #aaa;
+        --dim: #888;
+        --border: #333;
+        --error: #e74c3c;
+      }
+      :root[data-mode='light'] {
+        --accent-ink: #ffffff;
+        --bg: #f5f5fa;
+        --surface: #ffffff;
+        --surface-alt: #ecedf5;
+        --fg: #1a1a2e;
+        --muted: #555;
+        --dim: #888;
+        --border: #d8d8e0;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: system-ui, -apple-system, 'LINE Seed JP', sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        min-height: 100vh;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      /* ---------- Login ---------- */
+      #login-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .login-card {
+        max-width: 440px;
+        width: 100%;
+        padding: 2rem;
+        background: var(--surface);
+        border-radius: 14px;
+        border: 1px solid var(--border);
+      }
+      .login-card h1 { text-align: center; margin-bottom: 0.25rem; color: var(--accent); }
+      .login-card .tagline {
+        text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem;
+      }
+      .login-card label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--muted); }
+      .login-card input {
+        width: 100%; padding: 0.75rem; border: 1px solid var(--border);
+        border-radius: 8px; background: var(--surface-alt); color: var(--fg);
+        font-size: 1rem; margin-bottom: 1rem;
+      }
+      .btn-primary {
+        width: 100%; padding: 0.75rem; border: none; border-radius: 8px;
+        background: var(--accent); color: var(--accent-ink);
+        font-size: 1rem; font-weight: bold; cursor: pointer;
+      }
+      .btn-primary:hover { opacity: 0.9; }
+      .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      /* ---------- App Layout ---------- */
+      #editor-section {
+        display: none;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.85rem 1.5rem;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: sticky; top: 0; z-index: 10;
+      }
+      .app-header h2 { color: var(--accent); font-size: 1.15rem; }
+      .user-info { display: flex; align-items: center; gap: 0.75rem; }
+      .user-info img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--surface-alt); }
+      .user-info span { color: var(--muted); font-size: 0.9rem; }
+      .header-btn {
+        padding: 0.4rem 0.9rem; border: 1px solid var(--border); border-radius: 6px;
+        background: transparent; color: var(--muted); cursor: pointer; font-size: 0.85rem;
+        text-decoration: none; display: inline-flex; align-items: center;
+      }
+      .header-btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+      .app-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      @media (max-width: 900px) { .app-body { grid-template-columns: 1fr; } }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.25rem;
+      }
+      .panel h3 { font-size: 1rem; color: var(--fg); margin-bottom: 1rem; }
+
+      /* ---------- Profile form ---------- */
+      .form-group { margin-bottom: 1rem; }
+      .form-group label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.35rem; }
+      .form-group input, .form-group textarea {
+        width: 100%; padding: 0.6rem; border: 1px solid var(--border);
+        border-radius: 6px; background: var(--surface-alt); color: var(--fg);
+        font-size: 0.95rem; font-family: inherit;
+      }
+      .form-group textarea { min-height: 70px; resize: vertical; }
+
+      .theme-controls { display: flex; flex-direction: column; gap: 0.5rem; }
+      .swatches { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+      .swatch {
+        width: 28px; height: 28px; border-radius: 50%;
+        border: 2px solid transparent; cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+      }
+      .swatch:hover { transform: scale(1.1); }
+      .swatch.active { border-color: var(--fg); }
+      .color-picker {
+        width: 36px; height: 28px; padding: 0; border: 1px solid var(--border);
+        border-radius: 6px; background: transparent; cursor: pointer;
+      }
+      .mode-toggle { display: flex; gap: 0.4rem; }
+      .mode-option {
+        flex: 1; padding: 0.4rem; border: 1px solid var(--border); border-radius: 6px;
+        background: transparent; color: var(--muted); cursor: pointer; font-size: 0.85rem;
+      }
+      .mode-option.active { border-color: var(--accent); color: var(--accent); }
+
+      /* ---------- Links list ---------- */
+      .link-row {
+        display: flex; align-items: center; gap: 0.6rem;
+        padding: 0.6rem 0.75rem; background: var(--surface-alt); border-radius: 8px;
+        margin-bottom: 0.5rem;
+      }
+      .link-row .link-emoji { font-size: 1.25rem; min-width: 1.5rem; text-align: center; }
+      .link-row .link-info { flex: 1; min-width: 0; }
+      .link-row .link-title { font-weight: 600; color: var(--fg); font-size: 0.95rem; }
+      .link-row .link-url {
+        font-size: 0.75rem; color: var(--dim);
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .link-actions { display: flex; gap: 0.35rem; }
+      .icon-btn {
+        padding: 0.25rem 0.55rem; border: 1px solid var(--border); border-radius: 5px;
+        background: transparent; color: var(--muted); cursor: pointer; font-size: 0.75rem;
+        text-decoration: none;
+      }
+      .icon-btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+      .icon-btn.danger:hover { border-color: var(--error); color: var(--error); }
+
+      .add-link-form {
+        margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
+        display: grid; grid-template-columns: 3rem 1fr 1fr auto; gap: 0.4rem;
+      }
+      .add-link-form input {
+        padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;
+        background: var(--surface-alt); color: var(--fg); font-size: 0.9rem;
+      }
+      .add-link-form button {
+        padding: 0.5rem 0.9rem; border: none; border-radius: 6px;
+        background: var(--accent); color: var(--accent-ink);
+        font-weight: 600; cursor: pointer; font-size: 0.9rem;
+      }
+      .add-link-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      .empty-state {
+        color: var(--dim); text-align: center; padding: 1.5rem 0.5rem; font-size: 0.9rem;
+      }
+
+      /* ---------- Public viewer ---------- */
+      #view-section {
+        display: none;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+      .viewer-card {
+        max-width: 460px;
+        width: 100%;
+        text-align: center;
+      }
+      .viewer-card .avatar {
+        width: 96px; height: 96px; border-radius: 50%;
+        object-fit: cover; background: var(--surface); margin: 0 auto 1rem;
+        border: 3px solid var(--accent);
+      }
+      .viewer-card h1 { font-size: 1.5rem; color: var(--fg); margin-bottom: 0.25rem; }
+      .viewer-card .handle-text { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.75rem; }
+      .viewer-card .bio { color: var(--fg); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; white-space: pre-wrap; }
+      .viewer-links { display: flex; flex-direction: column; gap: 0.6rem; }
+      .viewer-link {
+        display: flex; align-items: center; gap: 0.6rem; justify-content: center;
+        padding: 0.9rem 1rem; background: var(--surface); border: 1px solid var(--border);
+        border-radius: 10px; color: var(--fg); font-weight: 600;
+        transition: transform 0.15s, border-color 0.15s;
+      }
+      .viewer-link:hover {
+        transform: translateY(-2px); border-color: var(--accent); text-decoration: none;
+      }
+      .viewer-link .link-emoji { font-size: 1.2rem; }
+      .viewer-footer {
+        margin-top: 2rem; font-size: 0.8rem; color: var(--dim);
+      }
+      .viewer-footer a { color: var(--dim); }
+
+      /* ---------- Status line ---------- */
+      #status {
+        position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
+        padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.85rem;
+        background: var(--surface); color: var(--fg); border: 1px solid var(--border);
+        min-width: 200px; text-align: center; opacity: 0; transition: opacity 0.2s;
+        pointer-events: none; z-index: 100;
+      }
+      #status.visible { opacity: 1; }
+      #status.error { border-color: var(--error); color: var(--error); }
+    </style>
+  </head>
+  <body>
+    <!-- Login -->
+    <div id="login-section">
+      <div class="login-card">
+        <h1>Link in Bio</h1>
+        <p class="tagline">Your links. Your PDS. On AT Protocol.</p>
+        <label for="handle-input">Your Bluesky Handle</label>
+        <input id="handle-input" type="text" placeholder="example.bsky.social" autocomplete="username" />
+        <button id="login-btn" class="btn-primary">OAuth Login</button>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div id="editor-section">
+      <div class="app-header">
+        <h2>Link in Bio</h2>
+        <div class="user-info">
+          <img id="user-avatar" src="" alt="" />
+          <span id="user-handle"></span>
+          <a id="view-public-link" class="header-btn" href="#" target="_blank" rel="noreferrer">Public view</a>
+          <button id="logout-btn" class="header-btn">Logout</button>
+        </div>
+      </div>
+
+      <div class="app-body">
+        <!-- Profile panel -->
+        <div class="panel">
+          <h3>Profile</h3>
+          <div class="form-group">
+            <label for="profile-display-name">Display Name</label>
+            <input id="profile-display-name" type="text" maxlength="64" placeholder="Your name" />
+          </div>
+          <div class="form-group">
+            <label for="profile-description">Description</label>
+            <textarea id="profile-description" maxlength="256" placeholder="A short bio…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Accent Color</label>
+            <div class="theme-controls">
+              <div class="swatches" id="theme-swatches">
+                <span class="swatch" style="background:#f291a5" data-color="#f291a5" title="Pink"></span>
+                <span class="swatch" style="background:#a78bfa" data-color="#a78bfa" title="Purple"></span>
+                <span class="swatch" style="background:#60a5fa" data-color="#60a5fa" title="Blue"></span>
+                <span class="swatch" style="background:#2dd4bf" data-color="#2dd4bf" title="Teal"></span>
+                <span class="swatch" style="background:#fbbf24" data-color="#fbbf24" title="Amber"></span>
+                <span class="swatch" style="background:#f87171" data-color="#f87171" title="Red"></span>
+                <input id="theme-color-picker" class="color-picker" type="color" value="#f291a5" title="Custom color" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Page Mode</label>
+            <div class="mode-toggle">
+              <button type="button" class="mode-option active" data-mode="dark">Dark</button>
+              <button type="button" class="mode-option" data-mode="light">Light</button>
+            </div>
+          </div>
+          <button id="save-profile-btn" class="btn-primary">Save Profile</button>
+          <p style="text-align:right; margin-top: 0.5rem;">
+            <a id="profile-pdsls-link" class="icon-btn" href="#" target="_blank" rel="noreferrer" style="display:none">View on PDSls</a>
+          </p>
+        </div>
+
+        <!-- Links panel -->
+        <div class="panel">
+          <h3>Links</h3>
+          <div id="links-list">
+            <p class="empty-state">No links yet — add your first one below!</p>
+          </div>
+          <form id="add-link-form" class="add-link-form" autocomplete="off">
+            <input id="add-link-emoji" type="text" maxlength="2" placeholder="🔗" />
+            <input id="add-link-title" type="text" maxlength="64" placeholder="Title" required />
+            <input id="add-link-url" type="url" placeholder="https://…" required />
+            <button type="submit">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Public viewer (read-only, no auth) -->
+    <div id="view-section">
+      <div class="viewer-card">
+        <img id="view-avatar" class="avatar" src="" alt="" />
+        <h1 id="view-display-name">Loading…</h1>
+        <p class="handle-text" id="view-handle"></p>
+        <p class="bio" id="view-bio"></p>
+        <div class="viewer-links" id="view-links"></div>
+        <p class="viewer-footer">
+          <a id="view-pdsls-link" href="#" target="_blank" rel="noreferrer">View on PDSls</a>
+          &nbsp;·&nbsp;
+          <a href="/" id="view-home-link">Make your own</a>
+        </p>
+      </div>
+    </div>
+
+    <div id="status"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

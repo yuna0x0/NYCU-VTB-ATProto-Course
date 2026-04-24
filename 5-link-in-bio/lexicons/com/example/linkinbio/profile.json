@@ -1,0 +1,61 @@
+{
+  "lexicon": 1,
+  "id": "com.example.linkinbio.profile",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A Link-in-Bio profile (one per user, key is literal:self).",
+      "key": "literal:self",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "maxGraphemes": 64,
+            "maxLength": 640,
+            "description": "The profile display name shown on the public page."
+          },
+          "description": {
+            "type": "string",
+            "maxGraphemes": 256,
+            "maxLength": 2560,
+            "description": "Short bio/description shown under the display name."
+          },
+          "theme": {
+            "type": "ref",
+            "ref": "#theme",
+            "description": "Personalized color + mode for this profile."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of when the profile was first created."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp of the last profile update."
+          }
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "description": "Visual personalization for the Link-in-Bio page.",
+      "properties": {
+        "accent": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 9,
+          "description": "Accent color as a CSS hex string, e.g. #f291a5 or #f291a5cc."
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["dark", "light"],
+          "description": "Page background mode."
+        }
+      }
+    }
+  }
+}

@@ -10,7 +10,7 @@ by [yuna0x0](https://github.com/yuna0x0)
 | --- | --- | --- |
 | 1 | 03/13 | AT Protocol 是什麼？ |
 | 2 | 03/20 | 實作自己的機器人和演算法！OAuth 驗證和你的第一個社交應用程式 |
-| 3 | 03/27 | Link in Bio on AT Protocol |
+| 3 | 04/24 | Link in Bio on AT Protocol |
 
 ## 專案結構
 
@@ -37,14 +37,16 @@ pnpm install          # 安裝所有依賴
 # 簡報
 pnpm slides:dev       # 第一堂簡報開發伺服器
 pnpm slides:dev:2     # 第二堂簡報開發伺服器
+pnpm slides:dev:3     # 第三堂簡報開發伺服器
 pnpm slides:build     # 建置所有簡報
-pnpm slides:export:2  # 匯出第二堂 PDF
+pnpm slides:export:3  # 匯出第三堂 PDF
 
 # 工作坊
 pnpm agent:dev        # 啟動 AI Bot
 pnpm feed:dev         # 啟動 Feed Generator
 pnpm oauth:dev        # 啟動 OAuth Demo
 pnpm social:dev       # 啟動 Mini Social App
+pnpm linkinbio:dev    # 啟動 Link in Bio
 ```
 
 ## 使用技術
