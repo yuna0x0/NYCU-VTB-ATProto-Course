@@ -115,7 +115,7 @@ dragPos:
   <div v-click="[3, 4]" class="border border-white/20 rounded-xl p-5">
     <lucide:key-round class="text-3xl mb-3 color-#f291a5" />
     <p class="font-bold text-lg mb-1">OAuth 登入</p>
-    <p class="text-white/60 text-sm">瀏覽器端安全登入（PKCE + DPoP）</p>
+    <p class="text-white/60 text-sm">瀏覽器授權登入（PKCE + DPoP）</p>
   </div>
   <div v-click="4" class="border border-white/20 rounded-xl p-5">
     <lucide:layout-dashboard class="text-3xl mb-3 color-#f291a5" />
