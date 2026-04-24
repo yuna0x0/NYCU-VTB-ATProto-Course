@@ -1,31 +1,33 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-mode="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Link in Bio — AT Protocol</title>
     <style>
+      /* Light mode (default) — neutral zinc palette */
       :root {
         --accent: #f291a5;
-        --accent-ink: #1a1a2e;
-        --bg: #1a1a2e;
-        --surface: #16213e;
-        --surface-alt: #0f3460;
-        --fg: #e0e0e0;
-        --muted: #aaa;
-        --dim: #888;
-        --border: #333;
-        --error: #e74c3c;
-      }
-      :root[data-mode='light'] {
         --accent-ink: #ffffff;
-        --bg: #f5f5fa;
+        --bg: #fafafa;          /* zinc-50 */
         --surface: #ffffff;
-        --surface-alt: #ecedf5;
-        --fg: #1a1a2e;
-        --muted: #555;
-        --dim: #888;
-        --border: #d8d8e0;
+        --surface-alt: #f4f4f5; /* zinc-100 */
+        --fg: #18181b;          /* zinc-900 */
+        --muted: #52525b;       /* zinc-600 */
+        --dim: #71717a;         /* zinc-500 */
+        --border: #e4e4e7;      /* zinc-200 */
+        --error: #dc2626;
+      }
+      :root[data-mode='dark'] {
+        --accent-ink: #ffffff;
+        --bg: #18181b;          /* zinc-900 */
+        --surface: #27272a;     /* zinc-800 */
+        --surface-alt: #3f3f46; /* zinc-700 */
+        --fg: #fafafa;          /* zinc-50 */
+        --muted: #a1a1aa;       /* zinc-400 */
+        --dim: #71717a;         /* zinc-500 */
+        --border: #3f3f46;      /* zinc-700 */
+        --error: #f87171;
       }
 
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,11 +60,54 @@
         text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem;
       }
       .login-card label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--muted); }
-      .login-card input {
+
+      .handle-field { position: relative; margin-bottom: 1rem; }
+      .handle-field input {
         width: 100%; padding: 0.75rem; border: 1px solid var(--border);
-        border-radius: 8px; background: var(--surface-alt); color: var(--fg);
-        font-size: 1rem; margin-bottom: 1rem;
+        border-radius: 8px; background: var(--surface-alt); color: var(--fg); font-size: 1rem;
       }
+      .handle-field input:focus {
+        outline: none; border-color: var(--accent);
+      }
+
+      #handle-typeahead {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin-top: 0.35rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        z-index: 20;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+      .typeahead-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+      }
+      .typeahead-item:hover, .typeahead-item.active {
+        background: var(--surface-alt);
+      }
+      .typeahead-item img {
+        width: 32px; height: 32px; border-radius: 50%;
+        object-fit: cover; background: var(--surface-alt); flex-shrink: 0;
+      }
+      .typeahead-text { min-width: 0; flex: 1; }
+      .typeahead-name {
+        font-size: 0.9rem; color: var(--fg); font-weight: 600;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .typeahead-handle {
+        font-size: 0.8rem; color: var(--muted);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+
       .btn-primary {
         width: 100%; padding: 0.75rem; border: none; border-radius: 8px;
         background: var(--accent); color: var(--accent-ink);
@@ -125,6 +170,9 @@
         font-size: 0.95rem; font-family: inherit;
       }
       .form-group textarea { min-height: 70px; resize: vertical; }
+      .form-group input:focus, .form-group textarea:focus {
+        outline: none; border-color: var(--accent);
+      }
 
       .theme-controls { display: flex; flex-direction: column; gap: 0.5rem; }
       .swatches { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
@@ -135,9 +183,14 @@
       .swatch:hover { transform: scale(1.1); }
       .swatch.active { border-color: var(--fg); }
       .color-picker {
-        width: 36px; height: 28px; padding: 0; border: 1px solid var(--border);
-        border-radius: 6px; background: transparent; cursor: pointer;
+        width: 36px; height: 28px; padding: 0;
+        border: 1px solid var(--border); border-radius: 6px;
+        background: transparent; cursor: pointer;
+        -webkit-appearance: none; appearance: none; overflow: hidden;
       }
+      .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+      .color-picker::-webkit-color-swatch { border: none; border-radius: 5px; }
+      .color-picker::-moz-color-swatch { border: none; border-radius: 5px; }
       .mode-toggle { display: flex; gap: 0.4rem; }
       .mode-option {
         flex: 1; padding: 0.4rem; border: 1px solid var(--border); border-radius: 6px;
@@ -175,6 +228,7 @@
         padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;
         background: var(--surface-alt); color: var(--fg); font-size: 0.9rem;
       }
+      .add-link-form input:focus { outline: none; border-color: var(--accent); }
       .add-link-form button {
         padding: 0.5rem 0.9rem; border: none; border-radius: 6px;
         background: var(--accent); color: var(--accent-ink);
@@ -230,6 +284,7 @@
         background: var(--surface); color: var(--fg); border: 1px solid var(--border);
         min-width: 200px; text-align: center; opacity: 0; transition: opacity 0.2s;
         pointer-events: none; z-index: 100;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
       #status.visible { opacity: 1; }
       #status.error { border-color: var(--error); color: var(--error); }
@@ -242,7 +297,10 @@
         <h1>Link in Bio</h1>
         <p class="tagline">Your links. Your PDS. On AT Protocol.</p>
         <label for="handle-input">Your Bluesky Handle</label>
-        <input id="handle-input" type="text" placeholder="example.bsky.social" autocomplete="username" />
+        <div class="handle-field">
+          <input id="handle-input" type="text" placeholder="example.bsky.social" autocomplete="off" autocapitalize="none" spellcheck="false" />
+          <div id="handle-typeahead"></div>
+        </div>
         <button id="login-btn" class="btn-primary">OAuth Login</button>
       </div>
     </div>
@@ -288,8 +346,8 @@
           <div class="form-group">
             <label>Page Mode</label>
             <div class="mode-toggle">
-              <button type="button" class="mode-option active" data-mode="dark">Dark</button>
-              <button type="button" class="mode-option" data-mode="light">Light</button>
+              <button type="button" class="mode-option active" data-mode="light">Light</button>
+              <button type="button" class="mode-option" data-mode="dark">Dark</button>
             </div>
           </div>
           <button id="save-profile-btn" class="btn-primary">Save Profile</button>

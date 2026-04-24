@@ -1,6 +1,7 @@
 import { Client } from '@atcute/client';
 import type {} from '@atcute/bluesky';
 import type { Did } from '@atcute/lexicons';
+import type { ActorIdentifier } from '@atcute/lexicons/syntax';
 
 import { login, handleCallback, resumeSession, logout, type OAuthUserAgent } from './lib/oauth.js';
 import { resolveActor, publicClient, appviewClient } from './lib/public.js';
@@ -47,7 +48,7 @@ function escapeHtml(text: string): string {
 const DEFAULT_ACCENT = '#f291a5';
 function applyTheme(theme: Theme | undefined) {
   const accent = theme?.accent && /^#[0-9a-f]{3,8}$/i.test(theme.accent) ? theme.accent : DEFAULT_ACCENT;
-  const mode = theme?.mode === 'light' ? 'light' : 'dark';
+  const mode = theme?.mode === 'dark' ? 'dark' : 'light';
   document.documentElement.style.setProperty('--accent', accent);
   document.documentElement.dataset.mode = mode;
 }
@@ -55,8 +56,8 @@ function applyTheme(theme: Theme | undefined) {
 // ---- App state ----
 let rpc: Client;
 let userDid: Did;
-let userHandle: string;
-let currentTheme: Theme = { accent: DEFAULT_ACCENT, mode: 'dark' };
+let currentTheme: Theme = { accent: DEFAULT_ACCENT, mode: 'light' };
+let loginWired = false;
 
 // =====================================================
 // Editor mode
@@ -66,55 +67,54 @@ async function initEditor(agent: OAuthUserAgent) {
   rpc = new Client({ handler: agent });
   userDid = agent.sub as Did;
 
-  // Fetch Bluesky profile (for avatar + handle in header) via the ANONYMOUS
-  // public appview — no auth required, no scope required. This is why our
-  // OAuth request only asks for `atproto` + two `repo:` scopes: profile
-  // display is a public read that atproto already lets anyone do.
-  let avatar = '';
-  let handle = '';
-  try {
-    const profileResult = await appviewClient.get('app.bsky.actor.getProfile', {
-      params: { actor: agent.sub },
-    });
-    if (profileResult.ok) {
-      avatar = profileResult.data.avatar || '';
-      handle = profileResult.data.handle;
-    }
-  } catch {
-    // best-effort — the app works even if the appview call fails
-  }
-  userHandle = handle;
-  (document.getElementById('user-avatar') as HTMLImageElement).src = avatar;
-  document.getElementById('user-handle')!.textContent = handle ? `@${handle}` : userDid;
+  // Show editor IMMEDIATELY. Even if any of the downstream data calls fail,
+  // the user should never be stuck looking at the login form after auth.
+  loginSection.style.display = 'none';
+  viewSection.style.display = 'none';
+  editorSection.style.display = 'flex';
 
-  const viewLink = document.getElementById('view-public-link') as HTMLAnchorElement;
-  viewLink.href = handle ? `#/view/${handle}` : `#/view/${userDid}`;
-
+  // Wire interactive controls up front so they work even before data loads.
   document.getElementById('logout-btn')!.addEventListener('click', () => logout(agent));
+  wireThemeControls();
+  wireSaveProfile();
+  wireAddLink();
 
-  // Load profile → populate form.
-  const profile = await getProfile(rpc, userDid);
-  if (profile) {
-    currentTheme = profile.theme ?? currentTheme;
+  // Load Bluesky profile (avatar + handle) from the anonymous public appview.
+  // Runs in the background; failures are logged but never block the editor.
+  loadBskyProfile(agent.sub).catch((err) => console.error('bsky profile load:', err));
+
+  // Load our custom profile record (singleton at rkey "self").
+  try {
+    const profile = await getProfile(rpc, userDid);
+    if (profile?.theme) currentTheme = profile.theme;
     populateProfileForm(profile);
-  } else {
+  } catch (err) {
+    console.error('linkinbio profile load:', err);
     populateProfileForm(null);
   }
   applyTheme(currentTheme);
   updateProfilePdsls();
 
-  // Wire form controls.
-  wireThemeControls();
-  wireSaveProfile();
-  wireAddLink();
+  // Load link records (collection listing).
+  try {
+    await renderLinks();
+  } catch (err) {
+    console.error('linkinbio links load:', err);
+    document.getElementById('links-list')!.innerHTML =
+      '<p class="empty-state">Failed to load links — check the console.</p>';
+  }
+}
 
-  // Load links.
-  await renderLinks();
-
-  // Show editor.
-  loginSection.style.display = 'none';
-  viewSection.style.display = 'none';
-  editorSection.style.display = 'flex';
+async function loadBskyProfile(actor: string): Promise<void> {
+  const result = await appviewClient.get('app.bsky.actor.getProfile', {
+    params: { actor: actor as ActorIdentifier },
+  });
+  if (!result.ok) return;
+  const avatar = result.data.avatar || '';
+  const handle = result.data.handle;
+  (document.getElementById('user-avatar') as HTMLImageElement).src = avatar;
+  document.getElementById('user-handle')!.textContent = `@${handle}`;
+  (document.getElementById('view-public-link') as HTMLAnchorElement).href = `#/view/${handle}`;
 }
 
 function populateProfileForm(profile: Profile | null) {
@@ -127,7 +127,7 @@ function populateProfileForm(profile: Profile | null) {
       normalizeHex(profile.theme.accent);
   }
   syncSwatchActive(currentTheme.accent);
-  syncModeActive(currentTheme.mode ?? 'dark');
+  syncModeActive(currentTheme.mode ?? 'light');
 }
 
 function normalizeHex(hex: string): string {
@@ -197,7 +197,7 @@ function wireSaveProfile() {
           mode: currentTheme.mode,
         },
       });
-      setStatus('Profile saved ✓');
+      setStatus('Profile saved');
       updateProfilePdsls();
     } catch (err) {
       setStatus(`Save failed: ${err instanceof Error ? err.message : err}`, true);
@@ -240,7 +240,7 @@ function wireAddLink() {
       titleInput.value = '';
       urlInput.value = '';
       await renderLinks();
-      setStatus('Link added ✓');
+      setStatus('Link added');
     } catch (err) {
       setStatus(`Add failed: ${err instanceof Error ? err.message : err}`, true);
     } finally {
@@ -265,7 +265,7 @@ async function renderLinks() {
       try {
         await deleteLink(rpc, userDid, rkey);
         await renderLinks();
-        setStatus('Link deleted ✓');
+        setStatus('Link deleted');
       } catch (err) {
         setStatus(`Delete failed: ${err instanceof Error ? err.message : err}`, true);
       }
@@ -318,7 +318,6 @@ async function renderPublicView(actorInput: string) {
     const pdsRpc = publicClient(resolved.pds);
     pdslsEl.href = `https://pdsls.dev/at://${did}`;
 
-    // Pull avatar + display name from public appview (no auth needed).
     let bskyAvatar = '';
     let bskyDisplayName = '';
     try {
@@ -329,13 +328,12 @@ async function renderPublicView(actorInput: string) {
       }
     } catch { /* non-fatal */ }
 
-    // Pull the custom Link-in-Bio profile + links from the user's PDS.
     const [profile, links] = await Promise.all([
       getProfile(pdsRpc, did),
       listLinks(pdsRpc, did),
     ]);
 
-    applyTheme(profile?.theme ?? { accent: DEFAULT_ACCENT, mode: 'dark' });
+    applyTheme(profile?.theme ?? { accent: DEFAULT_ACCENT, mode: 'light' });
     avatarEl.src = bskyAvatar;
     nameEl.textContent = profile?.displayName || bskyDisplayName || resolved.handle;
     handleEl.textContent = `@${resolved.handle}`;
@@ -361,6 +359,114 @@ async function renderPublicView(actorInput: string) {
 }
 
 // =====================================================
+// Handle typeahead (login input autocomplete)
+// =====================================================
+
+type TypeaheadActor = {
+  did: string;
+  handle: string;
+  displayName?: string;
+  avatar?: string;
+};
+
+let typeaheadTimer: number | undefined;
+let typeaheadAbort: AbortController | undefined;
+let typeaheadActive = -1;
+let typeaheadResults: TypeaheadActor[] = [];
+
+function wireHandleTypeahead() {
+  const input = document.getElementById('handle-input') as HTMLInputElement;
+  const dropdown = document.getElementById('handle-typeahead') as HTMLDivElement;
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    window.clearTimeout(typeaheadTimer);
+    if (typeaheadAbort) typeaheadAbort.abort();
+    if (q.length < 2) { hideTypeahead(); return; }
+    typeaheadTimer = window.setTimeout(() => runTypeahead(q), 180);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (dropdown.style.display !== 'block') return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      typeaheadActive = Math.min(typeaheadActive + 1, typeaheadResults.length - 1);
+      renderTypeahead();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      typeaheadActive = Math.max(typeaheadActive - 1, -1);
+      renderTypeahead();
+    } else if (e.key === 'Enter' && typeaheadActive >= 0) {
+      e.preventDefault();
+      pickTypeahead(typeaheadActive);
+    } else if (e.key === 'Escape') {
+      hideTypeahead();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!(e.target as Element).closest('.handle-field')) hideTypeahead();
+  });
+}
+
+async function runTypeahead(q: string) {
+  try {
+    typeaheadAbort = new AbortController();
+    const result = await appviewClient.get('app.bsky.actor.searchActorsTypeahead', {
+      params: { q, limit: 8 },
+      signal: typeaheadAbort.signal,
+    });
+    if (!result.ok) return;
+    typeaheadResults = (result.data.actors as TypeaheadActor[]) ?? [];
+    typeaheadActive = -1;
+    renderTypeahead();
+  } catch {
+    // aborted or network error — ignore silently
+  }
+}
+
+function renderTypeahead() {
+  const dropdown = document.getElementById('handle-typeahead') as HTMLDivElement;
+  if (typeaheadResults.length === 0) { hideTypeahead(); return; }
+  dropdown.innerHTML = typeaheadResults
+    .map(
+      (a, i) => `
+      <div class="typeahead-item${i === typeaheadActive ? ' active' : ''}" data-index="${i}">
+        <img src="${escapeHtml(a.avatar || '')}" alt="" />
+        <div class="typeahead-text">
+          <div class="typeahead-name">${escapeHtml(a.displayName || a.handle)}</div>
+          <div class="typeahead-handle">@${escapeHtml(a.handle)}</div>
+        </div>
+      </div>`,
+    )
+    .join('');
+  dropdown.style.display = 'block';
+  dropdown.querySelectorAll<HTMLDivElement>('.typeahead-item').forEach((el) => {
+    el.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      pickTypeahead(Number(el.dataset.index));
+    });
+  });
+}
+
+function pickTypeahead(index: number) {
+  const a = typeaheadResults[index];
+  if (!a) return;
+  const input = document.getElementById('handle-input') as HTMLInputElement;
+  input.value = a.handle;
+  hideTypeahead();
+  (document.getElementById('login-btn') as HTMLButtonElement).focus();
+}
+
+function hideTypeahead() {
+  typeaheadResults = [];
+  typeaheadActive = -1;
+  const dropdown = document.getElementById('handle-typeahead') as HTMLDivElement;
+  dropdown.style.display = 'none';
+  dropdown.innerHTML = '';
+}
+
+// =====================================================
 // Router + bootstrap
 // =====================================================
 
@@ -369,17 +475,25 @@ function parseViewRoute(): string | null {
   return m ? decodeURIComponent(m[1]!) : null;
 }
 
+function hasOAuthCallback(): boolean {
+  const search = new URLSearchParams(window.location.search);
+  if (search.has('state') && (search.has('code') || search.has('error'))) return true;
+  const hash = window.location.hash.startsWith('#/') ? '' : window.location.hash.slice(1);
+  if (hash) {
+    const hashParams = new URLSearchParams(hash);
+    if (hashParams.has('state') && (hashParams.has('code') || hashParams.has('error'))) return true;
+  }
+  return false;
+}
+
 async function init() {
-  // Route 1: public viewer
   const viewActor = parseViewRoute();
   if (viewActor) {
     await renderPublicView(viewActor);
     return;
   }
 
-  // Route 2: OAuth callback
-  const params = new URLSearchParams(window.location.search);
-  if (params.has('state')) {
+  if (hasOAuthCallback()) {
     setStatus('Completing login…', false, false);
     try {
       const agent = await handleCallback();
@@ -387,13 +501,13 @@ async function init() {
       await initEditor(agent);
       setStatus('');
     } catch (err) {
+      console.error('OAuth callback failed:', err);
       setStatus(`Login failed: ${err instanceof Error ? err.message : err}`, true);
       showLogin();
     }
     return;
   }
 
-  // Route 3: resume session
   const existing = await resumeSession();
   if (existing) {
     setStatus('Resuming session…', false, false);
@@ -406,7 +520,6 @@ async function init() {
     }
   }
 
-  // Default: login form
   showLogin();
 }
 
@@ -414,12 +527,16 @@ function showLogin() {
   loginSection.style.display = 'flex';
   editorSection.style.display = 'none';
   viewSection.style.display = 'none';
-  applyTheme({ accent: DEFAULT_ACCENT, mode: 'dark' });
+  applyTheme({ accent: DEFAULT_ACCENT, mode: 'light' });
+
+  if (loginWired) return;
+  loginWired = true;
 
   const btn = document.getElementById('login-btn') as HTMLButtonElement;
   const input = document.getElementById('handle-input') as HTMLInputElement;
+
   btn.addEventListener('click', async () => {
-    const handle = input.value.trim();
+    const handle = input.value.trim().replace(/^@/, '');
     if (!handle) { setStatus('Please enter your handle', true); return; }
     btn.disabled = true;
     setStatus('Redirecting to your PDS…', false, false);
@@ -429,7 +546,11 @@ function showLogin() {
       btn.disabled = false;
     }
   });
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') btn.click(); });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && typeaheadActive < 0) btn.click();
+  });
+
+  wireHandleTypeahead();
 }
 
 window.addEventListener('hashchange', () => {

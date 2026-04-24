@@ -922,13 +922,13 @@ pnpm dev
   <p class="text-sm text-white/50 mb-2">04/24</p>
   <h3 class="!m-0 !text-xl color-#f291a5">Link in Bio</h3>
   <div class="mt-3 text-sm text-white/70 space-y-1">
-    <li>細粒度 OAuth scope</li>
+    <li>最小權限 OAuth scope</li>
     <li>Singleton + Collection 合體</li>
     <li>公開檢視 + 自訂主題</li>
   </div>
 </div>
 </div>
-
+<br><br><br>
 <p v-click="4" class="mt-10 text-center text-2xl">
   現在你擁有自己的<span class="color-#f291a5 font-bold">社交資料</span>，不再被平台綁架 :3
 </p>
@@ -952,48 +952,6 @@ pnpm dev
 </div>
 
 </div>
-
----
----
-
-# 下一步？AT Protocol 的宇宙還很大
-
-<div class="grid grid-cols-2 gap-4 mt-6 text-sm">
-  <div class="border border-white/20 rounded-lg p-3">
-    <lucide:palette class="text-lg color-#f291a5 mb-1" />
-    <p class="font-bold">PinkSea</p>
-    <p class="text-white/60">oekaki BBS on atproto</p>
-  </div>
-  <div class="border border-white/20 rounded-lg p-3">
-    <lucide:newspaper class="text-lg color-#f291a5 mb-1" />
-    <p class="font-bold">Frontpage</p>
-    <p class="text-white/60">HN clone on atproto</p>
-  </div>
-  <div class="border border-white/20 rounded-lg p-3">
-    <lucide:code class="text-lg color-#f291a5 mb-1" />
-    <p class="font-bold">Tangled</p>
-    <p class="text-white/60">git hosting on atproto</p>
-  </div>
-  <div class="border border-white/20 rounded-lg p-3">
-    <lucide:book-open class="text-lg color-#f291a5 mb-1" />
-    <p class="font-bold">Leaflet</p>
-    <p class="text-white/60">blogging on atproto</p>
-  </div>
-  <div class="border border-white/20 rounded-lg p-3">
-    <lucide:book class="text-lg color-#f291a5 mb-1" />
-    <p class="font-bold">Bookhive</p>
-    <p class="text-white/60">reading list on atproto</p>
-  </div>
-  <div class="border border-white/20 rounded-lg p-3">
-    <lucide:sparkles class="text-lg color-#f291a5 mb-1" />
-    <p class="font-bold">說不定是你？</p>
-    <p class="text-white/60">下一個 atproto app :3</p>
-  </div>
-</div>
-
-<p class="mt-6 text-center text-lg text-white/70">
-  想學更深入？<a href="https://atproto.com" target="_blank">atproto.com</a> ｜ Discord <code>#at-protocol-by-yuna</code>
-</p>
 
 ---
 ---
