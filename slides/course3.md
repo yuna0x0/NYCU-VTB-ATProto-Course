@@ -140,7 +140,7 @@ dragPos:
   </div>
   <div v-click="[3, 4]" class="flex flex-col items-center border border-white/20 rounded-xl p-4">
     <lucide:shield-check class="text-3xl mb-2" />
-    <p class="text-base font-bold text-center">細粒度<br>OAuth Scope</p>
+    <p class="text-base font-bold text-center">最小<br> OAuth Scope</p>
   </div>
   <div v-click="[4, 5]" class="flex flex-col items-center border border-white/20 rounded-xl p-4">
     <lucide:palette class="text-3xl mb-2" />
