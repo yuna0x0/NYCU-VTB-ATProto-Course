@@ -170,13 +170,13 @@ dragPos:
 ### 生活中的例子
 
 <div class="space-y-4 mt-6 text-lg">
-  <li>Instagram / TikTok bio 裡那個唯一的連結</li>
+  <li>Bluesky / Twitter / Threads bio 裡那個唯一的連結</li>
   <li>點進去會看到一個「<span class="color-#f291a5 font-bold">連結集合頁</span>」</li>
-  <li>常見服務：<code>Linktree</code>、<code>Carrd</code>、<code>Beacons</code></li>
+  <li>常見服務：<code>Linktree</code>、<code>lit.link</code>、<code>POTOFU</code></li>
 </div>
 
 <div v-click class="mt-8 border-l-2 border-red pl-4 text-base text-white/70">
-  資料存在集中式服務 → 你<span class="color-red font-bold">不真的擁有</span>你的連結頁
+  資料存在中心化服務 → 你<span class="color-red font-bold">不真的擁有</span>你的連結頁
 </div>
 
 </div>
@@ -185,7 +185,7 @@ dragPos:
 ### 我們要做什麼？
 
 <div class="space-y-4 mt-6 text-lg">
-  <li v-click="[2, 3]">相同的 UX，但資料存在<span v-mark.box.pink="2">你自己的 PDS</span></li>
+  <li v-click="[2, 3]">類似的應用程式，但資料存在<span v-mark.box.pink="2">你自己的 PDS</span></li>
   <li v-click="[3, 4]">用自訂 <span class="color-purple font-bold">Lexicon</span> 定義資料格式</li>
   <li v-click="[4, 5]">OAuth 授權後才能寫入</li>
   <li v-click="5">任何人都能<span class="color-lime font-bold">免登入</span>瀏覽你的頁面</li>
@@ -292,7 +292,7 @@ dragPos:
 ### 它是什麼？
 
 <div class="space-y-4 mt-4 text-lg">
-  <li><span class="color-purple font-bold">Schema definition language</span></li>
+  <li><span class="color-purple font-bold">結構定義語言</span></li>
   <li>用 JSON 定義 record 結構 + XRPC 方法</li>
   <li>每個 schema 有唯一 <span class="font-bold">NSID</span>（反轉 domain）</li>
   <li><code>@atcute/lex-cli</code> 從 JSON 生成 TypeScript 型別</li>
@@ -450,9 +450,12 @@ dragPos:
 ---
 ---
 
-# Record CRUD 實戰
+# Record CRUD 實戰（1/2）寫入
 
-```typescript {all|1-11|13-19|21-26|28-30}
+<div class="mt-4">
+
+````md magic-move
+```typescript
 // putRecord — profile (singleton, rkey: "self")
 await rpc.post('com.atproto.repo.putRecord', {
   input: {
@@ -462,38 +465,85 @@ await rpc.post('com.atproto.repo.putRecord', {
     record: {
       $type: 'com.example.linkinbio.profile',
       displayName, description, theme,
-      createdAt, updatedAt: new Date().toISOString(),
-    }}});
+      createdAt,
+      updatedAt: new Date().toISOString(),
+    },
+  },
+});
+```
 
+```typescript
 // createRecord — link (server 產生 tid rkey)
 await rpc.post('com.atproto.repo.createRecord', {
   input: {
     repo: did,
     collection: 'com.example.linkinbio.link',
-    record: { $type: '...', url, title, emoji, order, createdAt },
-  }});
+    record: {
+      $type: 'com.example.linkinbio.link',
+      url, title, emoji, order,
+      createdAt: new Date().toISOString(),
+    },
+  },
+});
+```
+````
 
-// listRecords — 讀出所有 links
+</div>
+
+<div v-click class="mt-4 text-center text-white/60 text-sm">
+  <code>putRecord</code> 指定 <code>rkey</code>（upsert）｜<code>createRecord</code> 讓 server 產生 tid
+</div>
+
+---
+---
+
+# Record CRUD 實戰（2/2）讀取與刪除
+
+<div class="mt-4">
+
+````md magic-move
+```typescript
+// listRecords — 讀出 collection 的所有 record
 const result = await rpc.get('com.atproto.repo.listRecords', {
   params: {
     repo: did,
     collection: 'com.example.linkinbio.link',
     limit: 100,
-  }});
-
-// deleteRecord
-await rpc.post('com.atproto.repo.deleteRecord',
-  { input: { repo: did, collection: '...', rkey } });
+  },
+});
+if (result.ok) {
+  for (const r of result.data.records) {
+    console.log(r.uri, r.value);
+  }
+}
 ```
 
+```typescript
+// deleteRecord — 用 rkey 指定要刪的 record
+await rpc.post('com.atproto.repo.deleteRecord', {
+  input: {
+    repo: did,
+    collection: 'com.example.linkinbio.link',
+    rkey,
+  },
+});
+```
+````
+
+</div>
+
+<div v-click class="mt-4 text-center text-white/60 text-sm">
+  讀取自己的 record <span class="color-lime font-bold">不需要 scope</span>｜刪除需要 <code>action=delete</code>
+</div>
+
 ---
 ---
 
-# OAuth Scope：細粒度最小權限
+# OAuth Scope：只請求最小權限
 
 <div class="mt-4 text-left">
 
-<p class="text-lg text-white/70">這個 app 只要什麼權限？</p>
+<p class="text-lg text-white/70">這個 app 只需要什麼權限？</p>
 
 <div class="mt-6 space-y-3 text-base">
   <div v-click="[1, 2]" class="border border-white/20 rounded-lg px-4 py-3 flex items-center gap-4">
@@ -511,8 +561,7 @@ await rpc.post('com.atproto.repo.deleteRecord',
 </div>
 
 <div v-click="4" class="mt-6 border-l-2 border-lime pl-4 text-sm text-white/70">
-  <lucide:check class="inline-block color-lime mr-1" /> <b class="color-lime">沒有 <code>rpc:</code></b>：顯示使用者頭像用公開的 <code>public.api.bsky.app</code> appview，不需要 auth → 當然也不需要 scope。<br>
-  <span class="text-xs text-white/50">public read 本來就是 atproto 允許的行為</span>
+  <lucide:check class="inline-block color-lime mr-1" /> 顯示使用者頭像需要 <code>app.bsky.actor.profile</code> 資料，我們透過公開的 <code>public.api.bsky.app</code> AppView 讀取，不需要額外授權或驗證。
 </div>
 
 <div v-click="5" class="mt-3 border-l-2 border-red pl-4 text-sm text-white/60">
@@ -780,7 +829,7 @@ pnpm dev
   <li v-click="[1, 2]">確認資料<b class="color-#f291a5">真的</b>寫進你的 PDS</li>
   <li v-click="[2, 3]">看到 raw JSON，你寫出去的 $type / fields 全都對得上</li>
   <li v-click="[3, 4]">別人也能用同樣的 URL 看到你的資料（它本來就是公開的）</li>
-  <li v-click="4">未來開發新的 appview？資料早就在那了</li>
+  <li v-click="4">未來開發新的 AppView？資料早就在那了</li>
 </div>
 
 </div>
@@ -834,16 +883,11 @@ pnpm dev
     <p class="text-white/60 text-sm">重新排列連結 → 更新每筆 record 的 <code>order</code> 欄位</p>
   </div>
   <div v-click="[4, 5]" class="border border-white/20 rounded-xl p-5">
-    <lucide:at-sign class="text-2xl color-#f291a5 mb-2" />
-    <p class="font-bold text-lg mb-1">自訂 Handle</p>
-    <p class="text-white/60 text-sm">用 <code>yourname.com</code> 當 atproto handle（DNS TXT 或 .well-known）</p>
-  </div>
-  <div v-click="[5, 6]" class="border border-white/20 rounded-xl p-5">
     <lucide:server class="text-2xl color-#f291a5 mb-2" />
     <p class="font-bold text-lg mb-1">SSR 公開頁</p>
-    <p class="text-white/60 text-sm">後端渲染 <code>/{handle}</code> 給 OG preview 用（類似 linkat.blue）</p>
+    <p class="text-white/60 text-sm">用後端 SSR 渲染 <code>/{handle}</code> 頁面，分享連結到社群平台時會顯示縮圖卡片（類似 linkat.blue）</p>
   </div>
-  <div v-click="6" class="border border-white/20 rounded-xl p-5">
+  <div v-click="5" class="border border-white/20 rounded-xl p-5">
     <lucide:share-2 class="text-2xl color-#f291a5 mb-2" />
     <p class="font-bold text-lg mb-1">跨 App 整合</p>
     <p class="text-white/60 text-sm">讓其他 atproto app 也能顯示你的 Link in Bio</p>
@@ -959,7 +1003,7 @@ pnpm dev
 
 <div class="flex flex-col items-center justify-center h-full gap-6">
 <img src="./assets/shared/ema-kiang.webp" class="h-[40%] object-contain rounded-xl" />
-<h1 class="!text-4xl font-bold">謝謝大家！三週辛苦了喵 :3</h1>
+<h1 class="!text-4xl font-bold">謝謝大家！這三週辛苦了喵 :3</h1>
 </div>
 
 <p class="absolute bottom-4 right-6 text-xs text-white/40">GIF 來源：<a href="https://x.com/hyouenn/status/1990701565305569692" target="_blank">@hyouenn</a></p>

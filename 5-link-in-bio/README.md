@@ -95,8 +95,7 @@ repo:com.example.linkinbio.link?action=create&action=update&action=delete
 - **Theme gallery** — 加入預設主題（配色 + 字型）
 - **拖拉排序** — 改變 `order` 欄位
 - **自訂背景圖** — 上傳 blob 作為背景（需加 `blob:image/*` scope）
-- **`@yourhandle.com`** — 用自己的 domain 作為 atproto handle
-- **SSR 公開頁** — 後端 render `/{handle}` 路由給未登入訪客（類似 linkat.blue）
+- **SSR 公開頁** — 用後端 SSR 渲染 `/{handle}` 頁面，分享連結到 Bluesky / X 時會顯示縮圖卡片（類似 linkat.blue）
 
 ## 學習重點
 
