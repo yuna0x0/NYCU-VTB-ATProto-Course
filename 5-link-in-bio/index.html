@@ -243,10 +243,12 @@
         font-size: 1.1rem; line-height: 1; text-align: center;
       }
       .emoji-btn:hover { border-color: var(--accent); }
+      /* Viewport-anchored: JS sets top/left from the button's bounding rect
+         so the picker stays on-screen regardless of scroll position or how
+         many links push the form around. */
       #emoji-picker-overlay {
         display: none;
-        position: absolute;
-        bottom: calc(100% + 0.5rem); left: 0;
+        position: fixed;
         z-index: 30;
         border-radius: 10px; overflow: hidden;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);

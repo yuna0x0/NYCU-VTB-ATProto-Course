@@ -419,9 +419,34 @@ function wireEmojiPicker() {
   const overlay = document.getElementById('emoji-picker-overlay') as HTMLDivElement;
   const picker = overlay.querySelector('emoji-picker')!;
 
+  // emoji-picker-element default size.
+  const PICKER_W = 340;
+  const PICKER_H = 340;
+  const GAP = 8;
+
+  function positionOverlay() {
+    const r = btn.getBoundingClientRect();
+    // Prefer opening above the button; flip below if that would clip the top.
+    let top = r.top - PICKER_H - GAP;
+    if (top < GAP) top = r.bottom + GAP;
+    // If neither above nor below fits, clamp inside the viewport.
+    top = Math.max(GAP, Math.min(top, window.innerHeight - PICKER_H - GAP));
+
+    let left = r.left;
+    left = Math.max(GAP, Math.min(left, window.innerWidth - PICKER_W - GAP));
+
+    overlay.style.top = `${top}px`;
+    overlay.style.left = `${left}px`;
+  }
+
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+    if (overlay.style.display === 'block') {
+      overlay.style.display = 'none';
+      return;
+    }
+    positionOverlay();
+    overlay.style.display = 'block';
   });
 
   picker.addEventListener('emoji-click', (e: Event) => {
@@ -437,6 +462,11 @@ function wireEmojiPicker() {
       overlay.style.display = 'none';
     }
   });
+
+  // Re-anchor when the page scrolls or the viewport changes while open.
+  const reposition = () => { if (overlay.style.display === 'block') positionOverlay(); };
+  window.addEventListener('scroll', reposition, { passive: true });
+  window.addEventListener('resize', reposition);
 }
 
 // =====================================================
