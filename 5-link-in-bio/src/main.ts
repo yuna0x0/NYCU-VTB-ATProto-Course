@@ -715,4 +715,16 @@ window.addEventListener('hashchange', () => {
   else window.location.reload();
 });
 
-init();
+// OAuth DPoP requires WebCrypto (crypto.subtle), which browsers only expose
+// in "secure contexts": https://, http://localhost, http://127.0.0.1, etc.
+// A bare http:// page on any other hostname (LAN IP, custom domain) will
+// leave crypto.subtle undefined, and the first OAuth call crashes deep in
+// atcute with "Cannot read properties of undefined (reading 'digest')".
+// Catch it up-front with a readable message instead.
+if (typeof crypto === 'undefined' || !crypto.subtle) {
+  statusEl.textContent =
+    'WebCrypto is unavailable. Open this page over https:// or http://127.0.0.1 (not a LAN IP or plain http:// origin).';
+  statusEl.className = 'visible error';
+} else {
+  init();
+}
