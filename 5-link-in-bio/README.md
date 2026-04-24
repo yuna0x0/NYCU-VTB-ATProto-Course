@@ -77,10 +77,20 @@ repo:com.example.linkinbio.link?action=create&action=update&action=delete
    pnpm build                 # 產出 dist/
    npx wrangler pages deploy dist
    ```
-4. Cloudflare Pages 預設是 static site，callback route (`/callback`) 需要 SPA fallback，在 `public/_redirects` 加上：
-   ```
-   /*  /index.html  200
-   ```
+
+> SPA fallback 已經內建在 `public/_redirects`（`/* /index.html 200`），Cloudflare Pages 和 Netlify 都會讀取，確保 `/callback` 這種 SPA route 不會 404。
+
+## 本地預覽 production build
+
+用 `pnpm preview`（Vite 附帶的 server，已經處理 SPA fallback）：
+```bash
+pnpm build && pnpm preview
+```
+
+如果要用其他 static server 測試，記得加 SPA fallback 參數：
+```bash
+npx serve --single dist    # serve 的 --single 啟用 SPA fallback
+```
 
 ## 用 PDSls 驗證資料
 
